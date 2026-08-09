@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/ghostcall",
+      "destination": "https://ghost-call-theta.vercel.app"
+    },
+    {
+      "source": "/ghostcall/:path*",
+      "destination": "https://ghost-call-theta.vercel.app/:path*"
+    }
+  ]
+}

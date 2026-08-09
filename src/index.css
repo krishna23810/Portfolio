@@ -1,0 +1,103 @@
+@import "tailwindcss";
+
+@theme {
+  --color-neon: #00ff41;
+  --color-neon-dim: #00cc33;
+  --color-neon-glow: rgba(0, 255, 65, 0.15);
+  --color-card: #0a140a;
+  --color-card2: #0f1f0f;
+  --color-darkbg: #050a05;
+  --color-darkbg2: #091209;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-sans: 'Inter', sans-serif;
+}
+
+/* Base custom utility styles */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    background-color: #030703;
+    color: #e2e8f0;
+    font-family: var(--font-sans);
+  }
+}
+
+/* Custom glow and glass utilities */
+.glass-panel {
+  background: rgba(10, 20, 10, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 255, 65, 0.15);
+}
+
+.glass-card {
+  background: rgba(10, 20, 10, 0.85);
+  border: 1px solid rgba(0, 255, 65, 0.12);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+  border-color: rgba(0, 255, 65, 0.35);
+  box-shadow: 0 10px 30px -10px rgba(0, 255, 65, 0.15);
+  transform: translateY(-2px);
+}
+
+.neon-border-glow {
+  box-shadow: 0 0 25px -5px rgba(0, 255, 65, 0.2);
+}
+
+.neon-text-glow {
+  text-shadow: 0 0 12px rgba(0, 255, 65, 0.5);
+}
+
+/* Matrix background canvas positioning */
+#matrix-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  opacity: 0.15;
+  pointer-events: none;
+}
+
+/* Animations */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.05); }
+}
+
+@keyframes equalizer {
+  0% { height: 6px; }
+  50% { height: 22px; }
+  100% { height: 10px; }
+}
+
+.animate-blink {
+  animation: blink 1s step-end infinite;
+}
+
+.animate-equalizer {
+  animation: equalizer 1.2s ease-in-out infinite alternate;
+}
+
+.sk-fill {
+  height: 4px;
+  background: linear-gradient(90deg, #00cc33, #00ff41);
+  border-radius: 2px;
+  width: 0%;
+  transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Syntax highlighting in code card */
+.c-kw { color: #c792ea; }
+.c-var { color: #82aaff; }
+.c-str { color: #c3e88d; }
+.c-num { color: #f78c6c; }
+.c-key { color: #00ff41; }
