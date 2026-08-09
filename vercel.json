@@ -7,6 +7,10 @@
     {
       "source": "/ghostcall/:path*",
       "destination": "https://ghost-call-theta.vercel.app/:path*"
+    },
+    {
+      "source": "/_next/:path*",
+      "destination": "https://ghost-call-theta.vercel.app/_next/:path*"
     }
   ]
 }
