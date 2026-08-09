@@ -11,14 +11,6 @@
     {
       "source": "/_next/:path*",
       "destination": "https://ghost-call-theta.vercel.app/_next/:path*"
-    },
-    {
-      "source": "/assets/:path*",
-      "destination": "https://ghost-call-theta.vercel.app/assets/:path*"
-    },
-    {
-      "source": "/static/:path*",
-      "destination": "https://ghost-call-theta.vercel.app/static/:path*"
     }
   ]
 }
