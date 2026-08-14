@@ -1,4 +1,4 @@
-import { BarChart3, Gamepad2, Navigation, BookOpen, Calendar, Mic, Video, PhoneOff, Sparkles } from 'lucide-react'
+import { BarChart3, Gamepad2, Navigation, BookOpen, Calendar, Mic, Video, PhoneOff, Sparkles, Download } from 'lucide-react'
 
 const projectsList = [
   {
@@ -28,9 +28,11 @@ const projectsList = [
     subtitle: 'Cross-Platform Destination & Weather App',
     desc: 'Cross-platform Flutter mobile application enabling users to search destinations, explore famous landmarks, view real-time live weather forecasts, and build customized trip itineraries.',
     tags: ['Flutter', 'Dart', 'Weather API', 'REST APIs', 'Android/iOS'],
-    badge: 'Mobile App',
+    badge: 'Flutter Mobile App',
     badgeType: 'live',
-    link: '#',
+    link: '/download',
+    downloadUrl: '/TravelPlanner.apk',
+    isDownloadable: true,
     github: 'https://github.com/krishna23810/Travel-planner',
     icon: <Navigation className="w-6 h-6 text-emerald-400" />,
   },
@@ -82,7 +84,7 @@ function GhostIcon({ className = 'h-4 w-4' }) {
   );
 }
 
-export default function Projects() {
+export default function Projects({ onNavigateToDownload }) {
   return (
     <section id="projects" className="py-24 relative bg-[#040904]/90 border-t border-emerald-500/10">
       <div className="max-w-6xl mx-auto px-6 md:px-8">
@@ -205,7 +207,11 @@ export default function Projects() {
           {projectsList.map((project) => (
             <div
               key={project.title}
-              className="p-6 rounded-xl bg-[#070e07] border border-emerald-500/15 hover:border-emerald-500/35 hover:shadow-[0_0_25px_rgba(0,255,65,0.08)] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between"
+              className={`p-6 rounded-xl bg-[#070e07] border transition-all duration-300 flex flex-col justify-between ${
+                project.isDownloadable
+                  ? 'border-emerald-400/40 shadow-[0_0_30px_rgba(0,255,65,0.06)] hover:border-emerald-400'
+                  : 'border-emerald-500/15 hover:border-emerald-500/35 hover:shadow-[0_0_25px_rgba(0,255,65,0.08)]'
+              } hover:-translate-y-1`}
             >
               <div>
                 <div className="flex items-center justify-between mb-4">
@@ -223,8 +229,54 @@ export default function Projects() {
               </div>
 
               <div>
-                {/* For Internship Projects: Show Live Link if available */}
-                {project.badge === 'Internship Project' ? (
+                {/* For Downloadable Mobile Apps: Highlight Download & Page CTAs */}
+                {project.isDownloadable ? (
+                  <>
+                    <div className="flex flex-wrap gap-1.5 mb-5 font-mono text-[10px]">
+                      {project.tags.map((tag) => (
+                        <span key={tag} className="px-2 py-0.5 rounded bg-black border border-emerald-500/15 text-gray-400">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+
+                    <div className="flex flex-col gap-2 pt-3 border-t border-emerald-500/10 font-mono">
+                      <div className="flex items-center justify-between">
+                        <a
+                          href={project.github}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-xs text-gray-400 hover:text-emerald-400 transition-colors flex items-center gap-1"
+                        >
+                          <span>&lt;/&gt; GitHub</span>
+                        </a>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (onNavigateToDownload) {
+                              onNavigateToDownload()
+                            } else {
+                              window.location.href = '/download'
+                            }
+                          }}
+                          className="text-xs text-emerald-400 hover:text-emerald-300 font-semibold flex items-center gap-1"
+                        >
+                          <span>View App Page &rarr;</span>
+                        </button>
+                      </div>
+
+                      <a
+                        href={project.downloadUrl}
+                        download="TravelPlanner.apk"
+                        className="w-full py-2.5 px-3 rounded-lg bg-emerald-400/15 hover:bg-emerald-400 text-emerald-300 hover:text-black border border-emerald-400/40 text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(0,255,65,0.15)]"
+                      >
+                        <Download className="w-3.5 h-3.5" />
+                        <span>Download APK (~55.4 MB)</span>
+                      </a>
+                    </div>
+                  </>
+                ) : project.badge === 'Internship Project' ? (
                   <div className="flex items-center justify-between pt-3 border-t border-emerald-500/10">
                     <a
                       href={project.link}
