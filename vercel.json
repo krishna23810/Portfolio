@@ -1,6 +1,14 @@
 {
   "rewrites": [
     {
+      "source": "/api/counter",
+      "destination": "https://api.counterapi.dev/v2/dubbing-babas-team-5110/first-counter-5110"
+    },
+    {
+      "source": "/api/counter/:path*",
+      "destination": "https://api.counterapi.dev/v2/dubbing-babas-team-5110/first-counter-5110/:path*"
+    },
+    {
       "source": "/ghostcall",
       "destination": "https://ghost-call-theta.vercel.app"
     },

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import VisitorCounter from './VisitorCounter'
 
 const navItems = [
   { href: '#about', label: 'About', num: '01.' },
@@ -82,8 +83,8 @@ export default function Navbar() {
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${scrolled
-          ? 'border-b border-emerald-400/15 bg-black/85 py-3 shadow-[0_8px_30px_rgba(0,0,0,0.5)] backdrop-blur-xl'
-          : 'bg-transparent py-5'
+        ? 'border-b border-emerald-400/15 bg-black/85 py-3 shadow-[0_8px_30px_rgba(0,0,0,0.5)] backdrop-blur-xl'
+        : 'bg-transparent py-5'
         }`}
     >
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-emerald-400/30 to-transparent opacity-70" />
@@ -111,8 +112,8 @@ export default function Navbar() {
                 onClick={(e) => handleNavClick(e, item.href)}
                 aria-current={isActive ? 'location' : undefined}
                 className={`group relative flex items-center gap-1.5 rounded-md px-3 py-2 font-mono text-[11px] transition-all duration-200 ${isActive
-                    ? 'bg-emerald-400/15 text-emerald-300 font-semibold shadow-[0_0_12px_rgba(0,255,65,0.15)] border border-emerald-400/30'
-                    : 'text-gray-400 hover:bg-emerald-400/5 hover:text-gray-200'
+                  ? 'bg-emerald-400/15 text-emerald-300 font-semibold shadow-[0_0_12px_rgba(0,255,65,0.15)] border border-emerald-400/30'
+                  : 'text-gray-400 hover:bg-emerald-400/5 hover:text-gray-200'
                   }`}
               >
                 <span className={`transition-colors ${isActive ? 'text-emerald-400 font-bold' : 'text-emerald-400/60 group-hover:text-emerald-400'}`}>
@@ -126,6 +127,8 @@ export default function Navbar() {
         </nav>
 
         <div className="flex items-center gap-3">
+          <VisitorCounter className="hidden md:inline-flex text-[11px]" />
+
           <a
             href="mailto:agrawall.krishna08@gmail.com"
             className="group hidden items-center gap-1.5 rounded-md border border-emerald-400/70 px-4 py-2 font-mono text-[11px] font-semibold text-emerald-300 transition-all duration-200 hover:-translate-y-0.5 hover:bg-emerald-400 hover:text-black hover:shadow-[0_0_22px_rgba(0,255,65,0.3)] sm:inline-flex"
@@ -184,6 +187,7 @@ export default function Navbar() {
                 )
               })}
             </div>
+
             <a
               href="mailto:agrawall.krishna08@gmail.com"
               className="mt-3 flex items-center justify-center gap-2 rounded-lg border border-emerald-400 bg-emerald-400/10 px-4 py-3 font-mono text-xs font-semibold text-emerald-300 transition-colors hover:bg-emerald-400 hover:text-black"

@@ -1,4 +1,5 @@
 import { ChevronUp, Mail } from 'lucide-react'
+import VisitorCounter from './VisitorCounter'
 
 function InstagramIcon({ className = 'w-4 h-4 text-emerald-400' }) {
   return (
@@ -46,7 +47,7 @@ export default function Footer() {
 
         {/* Top Row: Brand & Socials & Scroll to top */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pb-8 border-b border-emerald-500/10">
-          
+
           {/* Logo & System Status */}
           <div className="flex items-center gap-3">
             <a href="#" className="flex items-center gap-2 group">
