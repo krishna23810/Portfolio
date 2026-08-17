@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { trackEvent } from '../utils/analytics'
 import {
   Download,
   Smartphone,
@@ -49,6 +50,11 @@ export default function DownloadApp({ onBack }) {
 
   const handleDownloadClick = () => {
     setDownloading(true)
+    trackEvent('apk_download_click', {
+      app_name: 'TravelPlanner',
+      version: apkVersion,
+      size: apkSize,
+    })
     setTimeout(() => {
       setDownloading(false)
       setDownloadStarted(true)
@@ -56,6 +62,7 @@ export default function DownloadApp({ onBack }) {
   }
 
   const handleShare = () => {
+    trackEvent('share_app_page', { app_name: 'TravelPlanner' })
     if (navigator.share) {
       navigator.share({
         title: 'Travel Planner APK Download',

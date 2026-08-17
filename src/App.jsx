@@ -9,6 +9,7 @@ import Education from './components/Education'
 import Contact from './components/Contact'
 import Footer from './components/Footer'
 import DownloadApp from './components/DownloadApp'
+import { initGA, logPageView } from './utils/analytics'
 
 function isDownloadRoute(path, hash) {
   return (
@@ -32,11 +33,19 @@ export default function App() {
   })
 
   useEffect(() => {
+    initGA()
+    logPageView(
+      isDownloadRoute(window.location.pathname, window.location.hash) ? '/download' : window.location.pathname,
+      document.title
+    )
+
     const handleLocationChange = () => {
       if (isDownloadRoute(window.location.pathname, window.location.hash)) {
         setCurrentPage('download')
+        logPageView('/download', 'Download Travel Planner APK | Krishnakant Agrawal')
       } else {
         setCurrentPage('home')
+        logPageView('/', 'Krishnakant Agrawal | Full Stack Developer')
       }
     }
 
@@ -52,6 +61,7 @@ export default function App() {
     setCurrentPage(page)
     window.history.pushState({}, '', path)
     window.scrollTo({ top: 0, behavior: 'smooth' })
+    logPageView(path, page === 'download' ? 'Download Travel Planner APK | Krishnakant Agrawal' : 'Krishnakant Agrawal | Full Stack Developer')
   }
 
   if (currentPage === 'download') {

@@ -1,4 +1,5 @@
 import { BarChart3, Gamepad2, Navigation, BookOpen, Calendar, Mic, Video, PhoneOff, Sparkles, Download } from 'lucide-react'
+import { trackEvent } from '../utils/analytics'
 
 const projectsList = [
   {
@@ -246,6 +247,7 @@ export default function Projects({ onNavigateToDownload }) {
                           href={project.github}
                           target="_blank"
                           rel="noopener noreferrer"
+                          onClick={() => trackEvent('project_github_click', { project_title: project.title })}
                           className="text-xs text-gray-400 hover:text-emerald-400 transition-colors flex items-center gap-1"
                         >
                           <span>&lt;/&gt; GitHub</span>
@@ -254,6 +256,7 @@ export default function Projects({ onNavigateToDownload }) {
                         <button
                           type="button"
                           onClick={() => {
+                            trackEvent('view_app_page_click', { project_title: project.title })
                             if (onNavigateToDownload) {
                               onNavigateToDownload()
                             } else {
@@ -269,6 +272,7 @@ export default function Projects({ onNavigateToDownload }) {
                       <a
                         href={project.downloadUrl}
                         download="TravelPlanner.apk"
+                        onClick={() => trackEvent('project_apk_download_click', { project_title: project.title })}
                         className="w-full py-2.5 px-3 rounded-lg bg-emerald-400/15 hover:bg-emerald-400 text-emerald-300 hover:text-black border border-emerald-400/40 text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(0,255,65,0.15)]"
                       >
                         <Download className="w-3.5 h-3.5" />
@@ -282,6 +286,7 @@ export default function Projects({ onNavigateToDownload }) {
                       href={project.link}
                       target="_blank"
                       rel="noopener noreferrer"
+                      onClick={() => trackEvent('project_live_demo_click', { project_title: project.title, link: project.link })}
                       className="font-mono text-xs text-emerald-400 hover:text-emerald-300 flex items-center gap-1 font-semibold"
                     >
                       <span>🌐 Visit Live Platform &rarr;</span>
@@ -302,6 +307,7 @@ export default function Projects({ onNavigateToDownload }) {
                         href={project.github}
                         target="_blank"
                         rel="noopener noreferrer"
+                        onClick={() => trackEvent('project_github_click', { project_title: project.title })}
                         className="font-mono text-xs text-emerald-400 hover:text-emerald-300 flex items-center gap-1"
                       >
                         <span>&lt;/&gt; GitHub</span>
@@ -312,6 +318,7 @@ export default function Projects({ onNavigateToDownload }) {
                           href={project.link}
                           target="_blank"
                           rel="noopener noreferrer"
+                          onClick={() => trackEvent('project_live_demo_click', { project_title: project.title, link: project.link })}
                           className="font-mono text-xs text-emerald-400 hover:text-emerald-300 flex items-center gap-1 font-semibold"
                         >
                           <span>Live Demo &rarr;</span>

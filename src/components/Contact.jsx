@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Mail, Phone, Send, ArrowRight, CheckCircle2, AlertCircle } from 'lucide-react'
+import { trackEvent } from '../utils/analytics'
 
 function InstagramIcon({ className = 'w-5 h-5 text-emerald-400' }) {
   return (
@@ -34,6 +35,7 @@ export default function Contact() {
   const onSubmit = async (event) => {
     event.preventDefault()
     setStatus({ submitting: true, success: false, error: false })
+    trackEvent('contact_form_attempt', { email: formData.email })
 
     try {
       const bodyData = new FormData(event.target)
@@ -48,6 +50,7 @@ export default function Contact() {
 
       if (data.success) {
         setStatus({ submitting: false, success: true, error: false })
+        trackEvent('contact_form_success', { form_name: 'contact_form' })
         setFormData({ name: '', email: '', message: '' })
 
         setTimeout(() => {
@@ -55,9 +58,11 @@ export default function Contact() {
         }, 6000)
       } else {
         setStatus({ submitting: false, success: false, error: data.message || "Failed to send message" })
+        trackEvent('contact_form_error', { error: data.message || 'Failed' })
       }
     } catch (err) {
       setStatus({ submitting: false, success: false, error: "Network error. Please try again." })
+      trackEvent('contact_form_error', { error: 'Network error' })
     }
   }
 
@@ -123,6 +128,7 @@ export default function Contact() {
                   href={item.href}
                   target={item.href.startsWith('http') ? '_blank' : '_self'}
                   rel="noopener noreferrer"
+                  onClick={() => trackEvent('contact_channel_click', { channel: item.label, link: item.href })}
                   className="p-3.5 rounded-xl bg-[#070e07] border border-emerald-500/15 hover:border-emerald-400/50 hover:bg-emerald-500/5 hover:shadow-[0_0_20px_rgba(0,255,65,0.08)] transition-all duration-300 flex items-center gap-4 group"
                 >
                   <div className="w-9 h-9 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center group-hover:scale-110 transition-transform shrink-0">
