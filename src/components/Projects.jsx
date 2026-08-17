@@ -208,11 +208,10 @@ export default function Projects({ onNavigateToDownload }) {
           {projectsList.map((project) => (
             <div
               key={project.title}
-              className={`p-6 rounded-xl bg-[#070e07] border transition-all duration-300 flex flex-col justify-between ${
-                project.isDownloadable
+              className={`p-6 rounded-xl bg-[#070e07] border transition-all duration-300 flex flex-col justify-between ${project.isDownloadable
                   ? 'border-emerald-400/40 shadow-[0_0_30px_rgba(0,255,65,0.06)] hover:border-emerald-400'
                   : 'border-emerald-500/15 hover:border-emerald-500/35 hover:shadow-[0_0_25px_rgba(0,255,65,0.08)]'
-              } hover:-translate-y-1`}
+                } hover:-translate-y-1`}
             >
               <div>
                 <div className="flex items-center justify-between mb-4">
@@ -253,7 +252,7 @@ export default function Projects({ onNavigateToDownload }) {
                           <span>&lt;/&gt; GitHub</span>
                         </a>
 
-                        <button
+                        {/* <button
                           type="button"
                           onClick={() => {
                             trackEvent('view_app_page_click', { project_title: project.title })
@@ -266,7 +265,7 @@ export default function Projects({ onNavigateToDownload }) {
                           className="text-xs text-emerald-400 hover:text-emerald-300 font-semibold flex items-center gap-1"
                         >
                           <span>View App Page &rarr;</span>
-                        </button>
+                        </button> */}
                       </div>
 
                       <a
