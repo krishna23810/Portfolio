@@ -37,8 +37,9 @@ export class ScrollEngine {
     // Robby Leonardi In-Scene Loading & Falling Drop
     this.isLoading = true
     this.loadingTimer = 0
-    this.loadingSlideY = 0
-    this.characterDropY = -350 // Starts high up in sky
+    this.cameraY = canvas.height * 0.85 // Camera starts up in sky, hiding ground & title initially
+    this.targetCameraY = canvas.height * 0.85
+    this.characterDropY = -250 // Starts high up in sky
     this.characterVelocityY = 0
     this.hasLanded = false
 
@@ -65,6 +66,10 @@ export class ScrollEngine {
     this.height = height
     this.canvas.width = width
     this.canvas.height = height
+    if (this.isLoading) {
+      this.cameraY = height * 0.85
+      this.targetCameraY = height * 0.85
+    }
   }
 
   handleTouchStart(e) {
@@ -142,7 +147,7 @@ export class ScrollEngine {
   update() {
     this.animTimer += 0.035
 
-    // Smooth inertia physics
+    // Smooth scroll inertia
     this.targetScrollProgress = Math.max(
       0,
       Math.min(1, this.targetScrollProgress + this.scrollVelocity)
@@ -185,27 +190,34 @@ export class ScrollEngine {
       this.callbacks.onScoreUpdate(currentScore)
     }
 
-    // In-Scene Loading & Falling Drop Progression
+    // =========================================================================
+    // IN-SCENE LOADING -> CAMERA DOWNWARD SCROLL -> CHARACTER GRAVITY DROP
+    // =========================================================================
     this.loadingTimer += 0.022
-    if (this.loadingTimer >= 1.5) {
+    if (this.loadingTimer < 1.6) {
+      this.isLoading = true
+      this.targetCameraY = this.height * 0.85 // Keep camera high in sky
+    } else {
       this.isLoading = false
-      // Smoothly slide loading banner up off screen
-      this.loadingSlideY += (-this.height * 1.3 - this.loadingSlideY) * 0.075
+      this.targetCameraY = 0 // Scroll camera down to ground level
+    }
 
-      // Character gravity fall from upward to downward
-      if (!this.hasLanded) {
-        const targetGroundY = this.height * 0.80 - 48
-        this.characterVelocityY += 1.35 // Gravity acceleration
-        this.characterDropY += this.characterVelocityY
+    // Smooth ease-out camera downward pan
+    this.cameraY += (this.targetCameraY - this.cameraY) * 0.055
 
-        if (this.characterDropY >= targetGroundY) {
-          this.characterDropY = targetGroundY
-          if (Math.abs(this.characterVelocityY) > 3) {
-            this.characterVelocityY = -this.characterVelocityY * 0.38 // Landing bounce
-          } else {
-            this.characterVelocityY = 0
-            this.hasLanded = true
-          }
+    // Once camera has nearly reached the ground (cameraY < 140), character drops down with gravity
+    if (this.cameraY < 140 && !this.hasLanded) {
+      const targetGroundY = this.height * 0.80 - 48
+      this.characterVelocityY += 1.4 // Gravity acceleration
+      this.characterDropY += this.characterVelocityY
+
+      if (this.characterDropY >= targetGroundY) {
+        this.characterDropY = targetGroundY
+        if (Math.abs(this.characterVelocityY) > 3) {
+          this.characterVelocityY = -this.characterVelocityY * 0.38 // Landing bounce
+        } else {
+          this.characterVelocityY = 0
+          this.hasLanded = true
         }
       }
     }
@@ -219,24 +231,39 @@ export class ScrollEngine {
     )
     const currentBiome = BIOMES[currentBiomeIdx] || BIOMES[0]
 
-    // 1. Draw Parallax Background & Sky
+    // 1. Clear with Cyan Sky background
+    this.ctx.fillStyle = '#00bff3'
+    this.ctx.fillRect(0, 0, this.width, this.height)
+
+    // 2. Draw World with vertical camera pan (pushed down during loading)
+    this.ctx.save()
+    this.ctx.translate(0, this.cameraY)
+
+    // Parallax Background & Sky elements
     this.bg.draw(this.ctx, this.width, this.height, this.cameraX, currentBiome)
 
-    // 2. Draw Multi-Level Robby Leonardi Scenery
+    // Multi-Level Scenery & Ground
     this.drawWorldScenery(currentBiome)
 
-    // 3. Draw Fixed Center Cartoon Avatar (Falling or Landed)
-    this.drawAvatar()
+    // Avatar (only revealed as scene descends into place)
+    if (this.cameraY < 180) {
+      this.drawAvatar()
+    }
 
-    // 4. Draw In-Scene Robby LOADING Banner (slides up on finish)
-    if (this.loadingSlideY > -this.height) {
+    this.ctx.restore()
+
+    // 3. Draw LOADING Banner in Sky (slides up as camera descends)
+    if (this.cameraY > 2) {
       this.drawInSceneLoadingBanner()
     }
   }
 
   drawInSceneLoadingBanner() {
+    const bannerOffset = (this.height * 0.85 - this.cameraY) * 1.5
+    const centerY = this.height * 0.44 - bannerOffset
+    if (centerY < -120) return // Fully off screen
+
     const centerX = this.width * 0.5
-    const centerY = this.height * 0.44 + this.loadingSlideY
     const bannerW = Math.min(420, this.width * 0.82)
     const bannerH = 100
     const bannerX = centerX - bannerW / 2
