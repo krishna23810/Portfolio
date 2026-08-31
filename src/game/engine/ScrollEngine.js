@@ -25,7 +25,7 @@ export class ScrollEngine {
     this.touchStartY = 0
     this.isDragging = false
 
-    // Animation & Avatar
+    // Animation, Loading & Avatar Entrance
     this.animTimer = 0
     this.stridePhase = 0
     this.isMoving = false
@@ -33,7 +33,14 @@ export class ScrollEngine {
     this.propellerAngle = 0
     this.isSubmarine = false
     this.isFlying = false
-    this.introProgress = 0 // 0 to 1 entrance drop animation
+
+    // Robby Leonardi In-Scene Loading & Falling Drop
+    this.isLoading = true
+    this.loadingTimer = 0
+    this.loadingSlideY = 0
+    this.characterDropY = -350 // Starts high up in sky
+    this.characterVelocityY = 0
+    this.hasLanded = false
 
     // Entities
     this.bg = new ParallaxBackground()
@@ -178,9 +185,29 @@ export class ScrollEngine {
       this.callbacks.onScoreUpdate(currentScore)
     }
 
-    // Intro entrance drop animation
-    if (this.introProgress < 1) {
-      this.introProgress = Math.min(1, this.introProgress + 0.022)
+    // In-Scene Loading & Falling Drop Progression
+    this.loadingTimer += 0.022
+    if (this.loadingTimer >= 1.5) {
+      this.isLoading = false
+      // Smoothly slide loading banner up off screen
+      this.loadingSlideY += (-this.height * 1.3 - this.loadingSlideY) * 0.075
+
+      // Character gravity fall from upward to downward
+      if (!this.hasLanded) {
+        const targetGroundY = this.height * 0.80 - 48
+        this.characterVelocityY += 1.35 // Gravity acceleration
+        this.characterDropY += this.characterVelocityY
+
+        if (this.characterDropY >= targetGroundY) {
+          this.characterDropY = targetGroundY
+          if (Math.abs(this.characterVelocityY) > 3) {
+            this.characterVelocityY = -this.characterVelocityY * 0.38 // Landing bounce
+          } else {
+            this.characterVelocityY = 0
+            this.hasLanded = true
+          }
+        }
+      }
     }
 
     this.bg.update()
@@ -198,8 +225,78 @@ export class ScrollEngine {
     // 2. Draw Multi-Level Robby Leonardi Scenery
     this.drawWorldScenery(currentBiome)
 
-    // 3. Draw Fixed Center Cartoon Avatar
+    // 3. Draw Fixed Center Cartoon Avatar (Falling or Landed)
     this.drawAvatar()
+
+    // 4. Draw In-Scene Robby LOADING Banner (slides up on finish)
+    if (this.loadingSlideY > -this.height) {
+      this.drawInSceneLoadingBanner()
+    }
+  }
+
+  drawInSceneLoadingBanner() {
+    const centerX = this.width * 0.5
+    const centerY = this.height * 0.44 + this.loadingSlideY
+    const bannerW = Math.min(420, this.width * 0.82)
+    const bannerH = 100
+    const bannerX = centerX - bannerW / 2
+    const bannerY = centerY - bannerH / 2
+
+    this.ctx.save()
+
+    // Left Ribbon Tail
+    this.ctx.fillStyle = '#b91c1c'
+    this.ctx.beginPath()
+    this.ctx.moveTo(bannerX - 26, bannerY + 18)
+    this.ctx.lineTo(bannerX + 10, bannerY + 18)
+    this.ctx.lineTo(bannerX + 10, bannerY + bannerH + 18)
+    this.ctx.lineTo(bannerX - 26, bannerY + bannerH + 18)
+    this.ctx.lineTo(bannerX - 12, bannerY + bannerH / 2 + 18)
+    this.ctx.closePath()
+    this.ctx.fill()
+
+    // Right Ribbon Tail
+    this.ctx.beginPath()
+    this.ctx.moveTo(bannerX + bannerW + 26, bannerY + 18)
+    this.ctx.lineTo(bannerX + bannerW - 10, bannerY + 18)
+    this.ctx.lineTo(bannerX + bannerW - 10, bannerY + bannerH + 18)
+    this.ctx.lineTo(bannerX + bannerW + 26, bannerY + bannerH + 18)
+    this.ctx.lineTo(bannerX + bannerW + 12, bannerY + bannerH / 2 + 18)
+    this.ctx.closePath()
+    this.ctx.fill()
+
+    // Main Banner Body (#f26d7d)
+    this.ctx.fillStyle = '#f26d7d'
+    this.ctx.fillRect(bannerX, bannerY, bannerW, bannerH)
+
+    // Top Highlight & Bottom Shadow Strips
+    this.ctx.fillStyle = '#f87171'
+    this.ctx.fillRect(bannerX, bannerY, bannerW, 5)
+    this.ctx.fillStyle = '#d32f2f'
+    this.ctx.fillRect(bannerX, bannerY + bannerH - 5, bannerW, 5)
+
+    // LOADING Text
+    this.ctx.fillStyle = '#ffffff'
+    this.ctx.font = '900 42px "Impact", "Arial Black", sans-serif'
+    this.ctx.textAlign = 'center'
+    this.ctx.textBaseline = 'middle'
+    this.ctx.shadowColor = 'rgba(0,0,0,0.2)'
+    this.ctx.shadowBlur = 4
+    this.ctx.fillText('LOADING', centerX, centerY - 10)
+
+    // 5 Pulsing Dots
+    const activeDot = Math.floor(this.loadingTimer * 4) % 5
+    for (let i = 0; i < 5; i++) {
+      const dotX = centerX - 36 + i * 18
+      const dotY = centerY + 24
+      const isActive = i === activeDot
+      this.ctx.fillStyle = isActive ? '#ffffff' : 'rgba(255, 204, 213, 0.65)'
+      this.ctx.beginPath()
+      this.ctx.arc(dotX, dotY, isActive ? 5 : 3.5, 0, Math.PI * 2)
+      this.ctx.fill()
+    }
+
+    this.ctx.restore()
   }
 
   drawWorldScenery(currentBiome) {
@@ -637,8 +734,13 @@ export class ScrollEngine {
   drawAvatar() {
     const screenX = this.width * 0.5
     const groundY = this.height * 0.80
-    const dropOffset = (1 - this.introProgress) * 180 * Math.sin((1 - this.introProgress) * Math.PI * 0.5)
-    const avatarY = (this.isSubmarine ? groundY - 140 + Math.sin(this.animTimer * 2) * 12 : groundY - 48) - dropOffset
+
+    let avatarY = groundY - 48
+    if (!this.hasLanded) {
+      avatarY = this.characterDropY
+    } else if (this.isSubmarine) {
+      avatarY = groundY - 140 + Math.sin(this.animTimer * 2) * 12
+    }
 
     this.ctx.save()
     this.ctx.translate(screenX, avatarY)
@@ -684,8 +786,9 @@ export class ScrollEngine {
       this.ctx.fillRect(-2, -16, 4, 32)
       this.ctx.restore()
     } else {
-      const bounceY = this.isMoving ? Math.sin(this.stridePhase) * 3 : 0
-      drawRobbyCharacter(this.ctx, bounceY, this.isMoving, this.stridePhase)
+      const bounceY = (this.isMoving && this.hasLanded) ? Math.sin(this.stridePhase) * 3 : 0
+      const isFlyingOrFalling = !this.hasLanded || this.isFlying
+      drawRobbyCharacter(this.ctx, bounceY, this.isMoving, this.stridePhase, isFlyingOrFalling)
     }
 
     this.ctx.restore()

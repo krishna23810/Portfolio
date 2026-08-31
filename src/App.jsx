@@ -82,9 +82,6 @@ export default function App() {
 
   return (
     <div id="content" className="relative w-screen h-screen overflow-hidden bg-[#00bff3] text-slate-100 font-sans select-none">
-      {/* Robby Leonardi Preloader on Same Page */}
-      <LoadingScreen onLoaded={() => setIsLoading(false)} />
-
       {isGameMode ? (
         <div id="container" className="relative w-full h-full">
           {/* Main 60 FPS Game World Canvas */}
