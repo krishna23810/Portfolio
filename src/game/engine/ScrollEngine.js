@@ -1,9 +1,19 @@
-// Pure Scroll-Driven Illustrated Resume Engine (Robby Leonardi Architecture)
-
 import { ParallaxBackground } from './ParallaxBackground'
 import { BIOMES, WORLD_LENGTH } from '../levels/levelData'
 import { soundManager } from '../audio/SoundManager'
 import { drawRobbyCharacter } from '../entities/RobbyCharacter'
+import plantSkillSrc from '../../assets/image copy 7.png'
+import gateSrc from '../../assets/gate.png'
+import grassEdgeSrc from '../../assets/grass-edge.png'
+
+const plantSkillImg = new Image()
+plantSkillImg.src = plantSkillSrc
+
+const gateImg = new Image()
+gateImg.src = gateSrc
+
+const grassEdgeImg = new Image()
+grassEdgeImg.src = grassEdgeSrc
 
 export class ScrollEngine {
   constructor(canvas, callbacks = {}) {
@@ -207,7 +217,7 @@ export class ScrollEngine {
 
     // Once camera has nearly reached the ground (cameraY < 140), character drops down with gravity
     if (this.cameraY < 140 && !this.hasLanded) {
-      const targetGroundY = this.height * 0.80 - 48
+      const targetGroundY = this.height * 0.80 - 74
       this.characterVelocityY += 1.4 // Gravity acceleration
       this.characterDropY += this.characterVelocityY
 
@@ -334,24 +344,34 @@ export class ScrollEngine {
     // 1. GROUND WITH TRIPLE CHEVRON TEXTURED EARTH SOIL (BOTTOM 20%)
     // =========================================================================
     this.ctx.save()
-    // Lawn (#8bc34a)
-    this.ctx.fillStyle = '#8bc34a'
-    this.ctx.fillRect(0, groundY, this.width, 32)
-
-    // Sawtooth trim (#7cb342)
-    this.ctx.fillStyle = '#7cb342'
-    for (let zx = -((this.cameraX) % 36); zx < this.width + 36; zx += 36) {
-      this.ctx.beginPath()
-      this.ctx.moveTo(zx, groundY + 32)
-      this.ctx.lineTo(zx + 18, groundY + 46)
-      this.ctx.lineTo(zx + 36, groundY + 32)
-      this.ctx.closePath()
-      this.ctx.fill()
-    }
-
-    // Soil Body (#795548)
+    // Lawn & Soil Body (#795548)
     this.ctx.fillStyle = '#795548'
-    this.ctx.fillRect(0, groundY + 32, this.width, this.height - groundY)
+    this.ctx.fillRect(0, groundY + 3, this.width, this.height - groundY)
+
+    // Lawn Grass with grassEdgeImg asset
+    if (grassEdgeImg.complete && grassEdgeImg.naturalWidth > 0) {
+      const tileW = 100
+      const tileH = tileW * (grassEdgeImg.naturalHeight / grassEdgeImg.naturalWidth)
+      const startX = -((this.cameraX) % tileW)
+      for (let gx = startX; gx < this.width + tileW; gx += tileW) {
+        this.ctx.drawImage(grassEdgeImg, gx, groundY, tileW, tileH)
+      }
+    } else {
+      // Lawn fallback (#8bc34a)
+      this.ctx.fillStyle = '#8bc34a'
+      this.ctx.fillRect(0, groundY, this.width, 32)
+
+      // Sawtooth trim (#7cb342)
+      this.ctx.fillStyle = '#7cb342'
+      for (let zx = -((this.cameraX) % 36); zx < this.width + 36; zx += 36) {
+        this.ctx.beginPath()
+        this.ctx.moveTo(zx, groundY + 32)
+        this.ctx.lineTo(zx + 18, groundY + 46)
+        this.ctx.lineTo(zx + 36, groundY + 32)
+        this.ctx.closePath()
+        this.ctx.fill()
+      }
+    }
 
     // 2 Wavy Chevron Zig-Zag Soil Bands
     this.ctx.fillStyle = 'rgba(0, 0, 0, 0.15)'
@@ -451,24 +471,44 @@ export class ScrollEngine {
 
   drawGate(startX, text, color, groundY) {
     const screenX = startX - this.cameraX
-    if (screenX < -200 || screenX > this.width + 200) return
-    const gY = groundY || this.height * 0.82
+    if (screenX < -300 || screenX > this.width + 300) return
+    const gY = groundY || this.height * 0.80
 
     this.ctx.save()
-    // Gate Columns
-    this.ctx.fillStyle = '#64748b'
-    this.ctx.fillRect(screenX, gY - 180, 24, 180)
-    this.ctx.fillRect(screenX + 136, gY - 180, 24, 180)
 
-    // Gate Header Arch
-    this.ctx.fillStyle = color
-    this.ctx.fillRect(screenX - 8, gY - 210, 176, 36)
+    if (gateImg.complete && gateImg.naturalWidth > 0) {
+      const gateW = 210
+      const gateH = gateW * (gateImg.naturalHeight / gateImg.naturalWidth)
+      const gateX = screenX
+      const gateY = gY - gateH
 
-    // Gate Text
-    this.ctx.fillStyle = '#ffffff'
-    this.ctx.font = '900 16px monospace'
-    this.ctx.textAlign = 'center'
-    this.ctx.fillText(text, screenX + 80, gY - 186)
+      this.ctx.drawImage(gateImg, gateX, gateY, gateW, gateH)
+
+      // Gate Text in bold white on top arch
+      this.ctx.fillStyle = '#ffffff'
+      this.ctx.font = '900 24px "Impact", "Arial Black", "Rubik", sans-serif'
+      this.ctx.textAlign = 'center'
+      this.ctx.textBaseline = 'middle'
+      this.ctx.shadowColor = 'rgba(0,0,0,0.25)'
+      this.ctx.shadowBlur = 3
+      this.ctx.fillText(text, gateX + gateW * 0.46, gateY + gateH * 0.19)
+    } else {
+      // Gate Columns fallback
+      this.ctx.fillStyle = '#64748b'
+      this.ctx.fillRect(screenX, gY - 180, 24, 180)
+      this.ctx.fillRect(screenX + 136, gY - 180, 24, 180)
+
+      // Gate Header Arch
+      this.ctx.fillStyle = color
+      this.ctx.fillRect(screenX - 8, gY - 210, 176, 36)
+
+      // Gate Text
+      this.ctx.fillStyle = '#ffffff'
+      this.ctx.font = '900 16px monospace'
+      this.ctx.textAlign = 'center'
+      this.ctx.fillText(text, screenX + 80, gY - 186)
+    }
+
     this.ctx.restore()
   }
 
@@ -515,18 +555,18 @@ export class ScrollEngine {
       this.ctx.fillStyle = '#16a34a'
       this.ctx.fillRect(plantX - 4, groundY - currHeight, 8, currHeight)
 
-      // Plant Head Flower / Bulb with Leaves
-      this.ctx.fillStyle = s.color
-      this.ctx.beginPath()
-      this.ctx.arc(plantX, groundY - currHeight - 12, 14, 0, Math.PI * 2)
-      this.ctx.fill()
-
-      // Side Leaves
-      this.ctx.fillStyle = '#22c55e'
-      this.ctx.beginPath()
-      this.ctx.ellipse(plantX - 12, groundY - currHeight / 2, 10, 5, -0.4, 0, Math.PI * 2)
-      this.ctx.ellipse(plantX + 12, groundY - currHeight / 2 - 15, 10, 5, 0.4, 0, Math.PI * 2)
-      this.ctx.fill()
+      // Plant Head using User's plantSkillImg asset
+      if (plantSkillImg.complete && plantSkillImg.naturalWidth > 0) {
+        const pW = 38
+        const pH = pW * (plantSkillImg.naturalHeight / plantSkillImg.naturalWidth)
+        this.ctx.drawImage(plantSkillImg, plantX - pW / 2, groundY - currHeight - pH + 8, pW, pH)
+      } else {
+        // Fallback bulb
+        this.ctx.fillStyle = s.color
+        this.ctx.beginPath()
+        this.ctx.arc(plantX, groundY - currHeight - 12, 14, 0, Math.PI * 2)
+        this.ctx.fill()
+      }
 
       // Skill Ribbon Banner below
       this.ctx.fillStyle = '#dc2626'
@@ -762,7 +802,7 @@ export class ScrollEngine {
     const screenX = this.width * 0.5
     const groundY = this.height * 0.80
 
-    let avatarY = groundY - 48
+    let avatarY = groundY - 85
     if (!this.hasLanded) {
       avatarY = this.characterDropY
     } else if (this.isSubmarine) {

@@ -1,15 +1,39 @@
-// Robby Leonardi Exact 1:1 Parallax Scene Engine
+// Robby Leonardi 1:1 Parallax Scene Engine with Real Asset Images
+// Multi-layer parallax: Clouds (0.2x) -> Mountains (0.5x) -> Mid Trees (0.8x) -> Foreground (1.0x)
+
+import mountainSrc from '../../assets/image copy.png'
+import treePillSrc from '../../assets/image copy 3.png'
+import treeMedSrc from '../../assets/image copy 4.png'
+import treeBushSrc from '../../assets/image copy 5.png'
+import plantSkillSrc from '../../assets/image copy 7.png'
+
+// Preload image assets
+const mountainImg = new Image()
+mountainImg.src = mountainSrc
+
+const treePillImg = new Image()
+treePillImg.src = treePillSrc
+
+const treeMedImg = new Image()
+treeMedImg.src = treeMedSrc
+
+const treeBushImg = new Image()
+treeBushImg.src = treeBushSrc
+
+const plantSkillImg = new Image()
+plantSkillImg.src = plantSkillSrc
 
 export class ParallaxBackground {
   constructor() {
     this.animTimer = 0
     this.clouds = [
       { x: 120, y: 75, scale: 1.2 },
-      { x: 500, y: 45, scale: 1.0 },
-      { x: 920, y: 80, scale: 1.35 },
-      { x: 1350, y: 55, scale: 1.1 },
-      { x: 1800, y: 70, scale: 1.25 },
-      { x: 2250, y: 45, scale: 1.0 },
+      { x: 520, y: 45, scale: 1.0 },
+      { x: 960, y: 80, scale: 1.35 },
+      { x: 1450, y: 55, scale: 1.1 },
+      { x: 1950, y: 70, scale: 1.25 },
+      { x: 2450, y: 45, scale: 1.0 },
+      { x: 3000, y: 65, scale: 1.3 },
     ]
 
     this.bubbles = []
@@ -38,7 +62,7 @@ export class ParallaxBackground {
     const isSky = cameraX >= 7400 && cameraX < 9300
     const isCastle = cameraX >= 9300
 
-    // 1. EXACT ROBBY CYAN SKY BACKGROUND (#00bff3)
+    // 1. SKY / BIOME GRADIENTS
     if (isUnderwater) {
       const grad = ctx.createLinearGradient(0, 0, 0, height)
       grad.addColorStop(0, '#02182b')
@@ -97,24 +121,29 @@ export class ParallaxBackground {
       ctx.fillStyle = grad
       ctx.fillRect(0, 0, width, height)
     } else {
-      // Robby Leonardi authentic bright cyan sky (#00bff3)
+      // Robby authentic cyan sky
       ctx.fillStyle = '#00bff3'
       ctx.fillRect(0, 0, width, height)
     }
 
-    // 2. PUFFY CARTOON CLOUDS
+    // 2. PARALLAX LAYER 1: FAR CLOUDS (0.2x Parallax Speed)
     if (!isUnderwater) {
       ctx.save()
       for (const c of this.clouds) {
-        const cloudX = (c.x - cameraX * 0.25) % (width + 400)
-        const drawX = cloudX < -150 ? cloudX + width + 400 : cloudX
+        const cloudX = (c.x - cameraX * 0.20) % (width + 500)
+        const drawX = cloudX < -160 ? cloudX + width + 500 : cloudX
         this.drawRobbyCloud(ctx, drawX, c.y, c.scale)
       }
       ctx.restore()
     }
 
-    // 3. TITLE SCENE BACKGROUND (Trees, Mountain, Ribbon, Giant 3D Title)
-    if (cameraX < 1600) {
+    // 3. PARALLAX LAYER 2: MOUNTAINS (0.45x Parallax Speed)
+    if (!isUnderwater && !isFactory && !isSky && !isCastle) {
+      this.drawParallaxMountains(ctx, width, height, cameraX, groundY)
+    }
+
+    // 4. PARALLAX LAYER 3: TITLE SCENE & FOREGROUND ASSETS (1.0x Speed)
+    if (cameraX < 2400) {
       this.drawTitleScene(ctx, width, height, cameraX, groundY)
     }
   }
@@ -134,51 +163,88 @@ export class ParallaxBackground {
     ctx.restore()
   }
 
+  drawParallaxMountains(ctx, width, height, cameraX, groundY) {
+    if (!mountainImg.complete || mountainImg.naturalWidth === 0) return
+
+    ctx.save()
+    // Mountains move at 0.45x camera speed for deep background parallax
+    const mtnParallaxX = -cameraX * 0.45
+
+    // Mountain 1 (Large main mountain behind Level 1)
+    const mtn1X = width * 0.5 + 280 + mtnParallaxX
+    const mtn1W = 540
+    const mtn1H = mtn1W * (mountainImg.naturalHeight / mountainImg.naturalWidth)
+    ctx.drawImage(mountainImg, mtn1X, groundY - mtn1H, mtn1W, mtn1H)
+
+    // Mountain 2 (Smaller distant mountain)
+    const mtn2X = width * 0.5 + 1100 + mtnParallaxX
+    const mtn2W = 420
+    const mtn2H = mtn2W * (mountainImg.naturalHeight / mountainImg.naturalWidth)
+    ctx.drawImage(mountainImg, mtn2X, groundY - mtn2H, mtn2W, mtn2H)
+
+    // Mountain 3 (Third distant peak before ocean)
+    const mtn3X = width * 0.5 + 2000 + mtnParallaxX
+    const mtn3W = 480
+    const mtn3H = mtn3W * (mountainImg.naturalHeight / mountainImg.naturalWidth)
+    ctx.drawImage(mountainImg, mtn3X, groundY - mtn3H, mtn3W, mtn3H)
+
+    ctx.restore()
+  }
+
   drawTitleScene(ctx, width, height, cameraX, groundY) {
     const titleCenterX = width * 0.5 - cameraX
 
     // -------------------------------------------------------------
-    // A. GEOMETRIC MOUNTAIN (Right Background)
+    // A. FOREGROUND TREES & BUSHES (Using User's Image Assets)
     // -------------------------------------------------------------
-    const mtnBaseX = titleCenterX + 280
     ctx.save()
-    // Light brown front facet
-    ctx.fillStyle = '#c68a4c'
-    ctx.beginPath()
-    ctx.moveTo(mtnBaseX, groundY)
-    ctx.lineTo(mtnBaseX + 180, groundY - 370)
-    ctx.lineTo(mtnBaseX + 180, groundY)
-    ctx.closePath()
-    ctx.fill()
 
-    // Dark brown shadow facet
-    ctx.fillStyle = '#9b642f'
-    ctx.beginPath()
-    ctx.moveTo(mtnBaseX + 180, groundY - 370)
-    ctx.lineTo(mtnBaseX + 460, groundY)
-    ctx.lineTo(mtnBaseX + 180, groundY)
-    ctx.closePath()
-    ctx.fill()
+    // 1. Far-left medium dome tree (treeMedImg)
+    if (treeMedImg.complete && treeMedImg.naturalWidth > 0) {
+      const treeW = 160
+      const treeH = treeW * (treeMedImg.naturalHeight / treeMedImg.naturalWidth)
+      ctx.drawImage(treeMedImg, titleCenterX - 560, groundY - treeH, treeW, treeH)
+    }
+
+    // 2. Giant center-left pill tree (treePillImg)
+    if (treePillImg.complete && treePillImg.naturalWidth > 0) {
+      const treeW = 200
+      const treeH = treeW * (treePillImg.naturalHeight / treePillImg.naturalWidth)
+      ctx.drawImage(treePillImg, titleCenterX - 420, groundY - treeH, treeW, treeH)
+    }
+
+    // 3. Front-left round bush (treeBushImg)
+    if (treeBushImg.complete && treeBushImg.naturalWidth > 0) {
+      const bushW = 145
+      const bushH = bushW * (treeBushImg.naturalHeight / treeBushImg.naturalWidth)
+      ctx.drawImage(treeBushImg, titleCenterX - 280, groundY - bushH, bushW, bushH)
+    }
+
+    // 4. Right-side pill tree & bush
+    if (treePillImg.complete && treePillImg.naturalWidth > 0) {
+      const treeW = 160
+      const treeH = treeW * (treePillImg.naturalHeight / treePillImg.naturalWidth)
+      ctx.drawImage(treePillImg, titleCenterX + 360, groundY - treeH, treeW, treeH)
+    }
+    if (treeBushImg.complete && treeBushImg.naturalWidth > 0) {
+      const bushW = 130
+      const bushH = bushW * (treeBushImg.naturalHeight / treeBushImg.naturalWidth)
+      ctx.drawImage(treeBushImg, titleCenterX + 220, groundY - bushH, bushW, bushH)
+    }
+
+    // 5. Level 1 Skill Stalk Plants (plantSkillImg)
+    if (plantSkillImg.complete && plantSkillImg.naturalWidth > 0) {
+      const plantW = 48
+      const plantH = plantW * (plantSkillImg.naturalHeight / plantSkillImg.naturalWidth)
+      ctx.drawImage(plantSkillImg, titleCenterX + 720, groundY - plantH, plantW, plantH)
+      ctx.drawImage(plantSkillImg, titleCenterX + 840, groundY - plantH * 0.85, plantW * 0.85, plantH * 0.85)
+      ctx.drawImage(plantSkillImg, titleCenterX + 960, groundY - plantH * 1.1, plantW * 1.1, plantH * 1.1)
+    }
+
     ctx.restore()
 
     // -------------------------------------------------------------
-    // B. ROBBY LEONARDI EXACT TREES & BUSHES
-    // -------------------------------------------------------------
-    // Far-left medium dome tree
-    this.drawCapsuleTree(ctx, titleCenterX - 580, groundY, 140, 310, '#558b2b', '#457223', '#8d6e63')
-
-    // Giant center-left rounded pill tree (2-tone split)
-    this.drawCapsuleTree(ctx, titleCenterX - 450, groundY, 180, 420, '#7bc043', '#689f38', '#8d6e63')
-
-    // Front-left small green bush
-    this.drawRoundBush(ctx, titleCenterX - 320, groundY, 140, 160, '#7bc043', '#689f38')
-
-    // Right side trees
-    this.drawCapsuleTree(ctx, titleCenterX + 340, groundY, 140, 270, '#7bc043', '#689f38', '#8d6e63')
-    this.drawRoundBush(ctx, titleCenterX + 210, groundY, 130, 145, '#7bc043', '#689f38')
-
-    // -------------------------------------------------------------
-    // C. RED RIBBON BANNER ("Interactive Resume of")
+    // B. RED RIBBON BANNER ("Interactive Resume of")
     // -------------------------------------------------------------
     ctx.save()
     const ribbonY = groundY - 420
@@ -186,9 +252,8 @@ export class ParallaxBackground {
     const ribbonH = 50
     const ribbonX = titleCenterX - ribbonW / 2
 
-    // Ribbon Fold Tails (Behind at left & right)
+    // Ribbon Tails
     ctx.fillStyle = '#b91c1c'
-    // Left tail
     ctx.beginPath()
     ctx.moveTo(ribbonX - 32, ribbonY + 16)
     ctx.lineTo(ribbonX + 10, ribbonY + 16)
@@ -198,7 +263,6 @@ export class ParallaxBackground {
     ctx.closePath()
     ctx.fill()
 
-    // Right tail
     ctx.beginPath()
     ctx.moveTo(ribbonX + ribbonW + 32, ribbonY + 16)
     ctx.lineTo(ribbonX + ribbonW - 10, ribbonY + 16)
@@ -208,13 +272,13 @@ export class ParallaxBackground {
     ctx.closePath()
     ctx.fill()
 
-    // Ribbon Body (#ed1c24)
+    // Ribbon Body
     ctx.fillStyle = '#ed1c24'
     ctx.fillRect(ribbonX, ribbonY, ribbonW, ribbonH)
     ctx.fillStyle = '#f87171'
-    ctx.fillRect(ribbonX, ribbonY, ribbonW, 4) // Top highlight
+    ctx.fillRect(ribbonX, ribbonY, ribbonW, 4)
     ctx.fillStyle = '#b91c1c'
-    ctx.fillRect(ribbonX, ribbonY + ribbonH - 4, ribbonW, 4) // Bottom shadow
+    ctx.fillRect(ribbonX, ribbonY + ribbonH - 4, ribbonW, 4)
 
     // Text: "Interactive Resume of"
     ctx.fillStyle = '#ffffff'
@@ -225,13 +289,13 @@ export class ParallaxBackground {
     ctx.restore()
 
     // -------------------------------------------------------------
-    // D. 3D ISOMETRIC EXTRUDED TITLE (KRISHNAKANT / AGRAWAL)
+    // C. 3D ISOMETRIC EXTRUDED TITLE (KRISHNAKANT / AGRAWAL)
     // -------------------------------------------------------------
     ctx.save()
     const titleY1 = groundY - 295
     const titleY2 = groundY - 190
 
-    // 1. Massive 3D Drop Shadow Extrusion in Deep Crimson (#6b0b2e)
+    // 1. 3D Drop Shadow Extrusion in Deep Crimson
     for (let offset = 140; offset >= 1; offset -= 2) {
       const shadowColor = offset > 60 ? '#4a0b22' : '#6b0b2e'
       ctx.fillStyle = shadowColor
@@ -241,7 +305,7 @@ export class ParallaxBackground {
       ctx.fillText('AGRAWAL', titleCenterX + offset * 0.95, titleY2 + offset * 0.95)
     }
 
-    // 2. Beveled Extrusion Layer for KRISHNAKANT (Orange Side Faces)
+    // 2. Beveled Extrusion Layer for KRISHNAKANT (Orange)
     for (let s = 14; s >= 1; s--) {
       ctx.fillStyle = '#d85f16'
       ctx.font = '900 94px "Impact", "Arial Black", sans-serif'
@@ -249,13 +313,13 @@ export class ParallaxBackground {
       ctx.fillText('KRISHNAKANT', titleCenterX + s, titleY1 + s)
     }
 
-    // Front Face of KRISHNAKANT (Warm Robby Orange #ff981f)
+    // Front Face of KRISHNAKANT (Warm Orange #ff981f)
     ctx.fillStyle = '#ff981f'
     ctx.font = '900 94px "Impact", "Arial Black", sans-serif'
     ctx.textAlign = 'center'
     ctx.fillText('KRISHNAKANT', titleCenterX, titleY1)
 
-    // 3. Beveled Extrusion Layer for AGRAWAL (Magenta/Crimson Side Faces)
+    // 3. Beveled Extrusion Layer for AGRAWAL (Magenta/Rose)
     for (let s = 14; s >= 1; s--) {
       ctx.fillStyle = '#9e1b32'
       ctx.font = '900 94px "Impact", "Arial Black", sans-serif'
@@ -263,43 +327,9 @@ export class ParallaxBackground {
       ctx.fillText('AGRAWAL', titleCenterX + s, titleY2 + s)
     }
 
-    // Front Face of AGRAWAL (Vibrant Coral Rose #f26d7d)
+    // Front Face of AGRAWAL (Coral Rose #f26d7d)
     ctx.fillStyle = '#f26d7d'
     ctx.fillText('AGRAWAL', titleCenterX, titleY2)
-    ctx.restore()
-  }
-
-  drawCapsuleTree(ctx, x, groundY, width, height, colorLight, colorDark, trunkColor) {
-    ctx.save()
-    const trunkW = width * 0.22
-    const trunkH = height * 0.42
-    ctx.fillStyle = trunkColor
-    ctx.fillRect(x + (width - trunkW) / 2, groundY - trunkH, trunkW, trunkH)
-
-    ctx.fillStyle = colorLight
-    ctx.beginPath()
-    ctx.roundRect(x, groundY - height, width, height - trunkH + 20, width / 2)
-    ctx.fill()
-
-    ctx.fillStyle = colorDark
-    ctx.beginPath()
-    ctx.roundRect(x + width * 0.5, groundY - height, width * 0.5, height - trunkH + 20, [0, width / 2, width / 2, 0])
-    ctx.fill()
-    ctx.restore()
-  }
-
-  drawRoundBush(ctx, x, groundY, width, height, colorLight, colorDark) {
-    ctx.save()
-    const radius = width / 2
-    ctx.fillStyle = colorLight
-    ctx.beginPath()
-    ctx.arc(x + radius, groundY - height + radius, radius, 0, Math.PI * 2)
-    ctx.fill()
-
-    ctx.fillStyle = colorDark
-    ctx.beginPath()
-    ctx.arc(x + radius, groundY - height + radius, radius, Math.PI * 1.5, Math.PI * 0.5)
-    ctx.fill()
     ctx.restore()
   }
 }

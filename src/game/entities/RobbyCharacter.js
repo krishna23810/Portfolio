@@ -55,8 +55,8 @@ export function drawRobbyCharacter(
   const sx = col * frameW
   const sy = row * frameH
 
-  // Display size — match Robby Leonardi's hero character proportions
-  const displayW = 160
+  // Display size — larger hero presence matching Robby Leonardi 1:1 scale
+  const displayW = 180
   const displayH = frameH * (displayW / frameW)
 
   ctx.save()
