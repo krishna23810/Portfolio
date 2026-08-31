@@ -4,6 +4,7 @@ import GameHUD from './game/ui/GameHUD'
 import ModalViewer from './game/ui/ModalViewer'
 import RecruiterView from './game/ui/RecruiterView'
 import DownloadApp from './components/DownloadApp'
+import LoadingScreen from './game/ui/LoadingScreen'
 import { LEVELS } from './game/levels/levelData'
 import { initGA, logPageView } from './utils/analytics'
 
@@ -21,6 +22,7 @@ function isDownloadRoute(path, hash) {
 }
 
 export default function App() {
+  const [isLoading, setIsLoading] = useState(true)
   const [currentPage, setCurrentPage] = useState(() => {
     if (typeof window !== 'undefined') {
       return isDownloadRoute(window.location.pathname, window.location.hash) ? 'download' : 'game'
@@ -79,9 +81,12 @@ export default function App() {
   }
 
   return (
-    <div className="relative w-screen h-screen overflow-hidden bg-[#050713] text-slate-100 font-sans select-none">
+    <div id="content" className="relative w-screen h-screen overflow-hidden bg-[#00bff3] text-slate-100 font-sans select-none">
+      {/* Robby Leonardi Preloader on Same Page */}
+      <LoadingScreen onLoaded={() => setIsLoading(false)} />
+
       {isGameMode ? (
-        <>
+        <div id="container" className="relative w-full h-full">
           {/* Main 60 FPS Game World Canvas */}
           <GameCanvas
             engineRef={engineRef}
@@ -102,7 +107,7 @@ export default function App() {
             engineRef={engineRef}
             onOpenHelp={() => setActiveModal({ type: 'help' })}
           />
-        </>
+        </div>
       ) : (
         /* Traditional Recruiter Grid Document View */
         <div className="w-full h-full overflow-y-auto">

@@ -33,6 +33,7 @@ export class ScrollEngine {
     this.propellerAngle = 0
     this.isSubmarine = false
     this.isFlying = false
+    this.introProgress = 0 // 0 to 1 entrance drop animation
 
     // Entities
     this.bg = new ParallaxBackground()
@@ -175,6 +176,11 @@ export class ScrollEngine {
     const currentScore = Math.floor(this.scrollProgress * 10000)
     if (this.callbacks.onScoreUpdate) {
       this.callbacks.onScoreUpdate(currentScore)
+    }
+
+    // Intro entrance drop animation
+    if (this.introProgress < 1) {
+      this.introProgress = Math.min(1, this.introProgress + 0.022)
     }
 
     this.bg.update()
@@ -631,12 +637,11 @@ export class ScrollEngine {
   drawAvatar() {
     const screenX = this.width * 0.5
     const groundY = this.height * 0.80
-    const avatarY = this.isSubmarine ? groundY - 140 + Math.sin(this.animTimer * 2) * 12 : groundY - 68
+    const dropOffset = (1 - this.introProgress) * 180 * Math.sin((1 - this.introProgress) * Math.PI * 0.5)
+    const avatarY = (this.isSubmarine ? groundY - 140 + Math.sin(this.animTimer * 2) * 12 : groundY - 48) - dropOffset
 
     this.ctx.save()
     this.ctx.translate(screenX, avatarY)
-    // Scale avatar to 1.4x to match Robby Leonardi's hero presence
-    this.ctx.scale(1.4, 1.4)
 
     if (this.facing === 'left') {
       this.ctx.scale(-1, 1)
@@ -679,7 +684,7 @@ export class ScrollEngine {
       this.ctx.fillRect(-2, -16, 4, 32)
       this.ctx.restore()
     } else {
-      const bounceY = this.isMoving ? Math.sin(this.stridePhase) * 4 : 0
+      const bounceY = this.isMoving ? Math.sin(this.stridePhase) * 3 : 0
       drawRobbyCharacter(this.ctx, bounceY, this.isMoving, this.stridePhase)
     }
 
