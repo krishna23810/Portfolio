@@ -203,8 +203,8 @@ export default function DownloadApp({ onBack }) {
                 download="TravelPlanner.apk"
                 onClick={handleDownloadClick}
                 className={`flex-1 group relative flex items-center justify-center gap-3 px-8 py-4 rounded-xl font-mono font-bold text-base transition-all duration-300 shadow-[0_0_35px_rgba(0,255,65,0.4)] ${downloading
-                    ? 'bg-emerald-500 text-black'
-                    : 'bg-emerald-400 hover:bg-emerald-300 text-black hover:scale-[1.02]'
+                  ? 'bg-emerald-500 text-black'
+                  : 'bg-emerald-400 hover:bg-emerald-300 text-black hover:scale-[1.02]'
                   }`}
               >
                 <Download className={`w-5 h-5 ${downloading ? 'animate-bounce' : 'group-hover:translate-y-0.5 transition-transform'}`} />

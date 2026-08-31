@@ -1,14 +1,10 @@
-import { useState, useEffect } from 'react'
-import Navbar from './components/Navbar'
-import Hero from './components/Hero'
-import About from './components/About'
-import Skills from './components/Skills'
-import Projects from './components/Projects'
-import Experience from './components/Experience'
-import Education from './components/Education'
-import Contact from './components/Contact'
-import Footer from './components/Footer'
+import { useState, useEffect, useRef } from 'react'
+import GameCanvas from './game/engine/GameCanvas'
+import GameHUD from './game/ui/GameHUD'
+import ModalViewer from './game/ui/ModalViewer'
+import RecruiterView from './game/ui/RecruiterView'
 import DownloadApp from './components/DownloadApp'
+import { LEVELS } from './game/levels/levelData'
 import { initGA, logPageView } from './utils/analytics'
 
 function isDownloadRoute(path, hash) {
@@ -27,10 +23,19 @@ function isDownloadRoute(path, hash) {
 export default function App() {
   const [currentPage, setCurrentPage] = useState(() => {
     if (typeof window !== 'undefined') {
-      return isDownloadRoute(window.location.pathname, window.location.hash) ? 'download' : 'home'
+      return isDownloadRoute(window.location.pathname, window.location.hash) ? 'download' : 'game'
     }
-    return 'home'
+    return 'game'
   })
+
+  // Game vs Recruiter view mode
+  const [isGameMode, setIsGameMode] = useState(true)
+  const [score, setScore] = useState(0)
+  const [currentLevel, setCurrentLevel] = useState(LEVELS[0])
+  const [nearbyPortal, setNearbyPortal] = useState(null)
+  const [activeModal, setActiveModal] = useState(null)
+
+  const engineRef = useRef(null)
 
   useEffect(() => {
     initGA()
@@ -44,8 +49,8 @@ export default function App() {
         setCurrentPage('download')
         logPageView('/download', 'Download Travel Planner APK | Krishnakant Agrawal')
       } else {
-        setCurrentPage('home')
-        logPageView('/', 'Krishnakant Agrawal | Full Stack Developer')
+        setCurrentPage('game')
+        logPageView('/', 'Krishnakant Agrawal | Interactive Resume Game')
       }
     }
 
@@ -61,26 +66,55 @@ export default function App() {
     setCurrentPage(page)
     window.history.pushState({}, '', path)
     window.scrollTo({ top: 0, behavior: 'smooth' })
-    logPageView(path, page === 'download' ? 'Download Travel Planner APK | Krishnakant Agrawal' : 'Krishnakant Agrawal | Full Stack Developer')
+  }
+
+  const handleWarpToLevel = (levelId) => {
+    if (engineRef.current) {
+      engineRef.current.jumpToLevel(levelId)
+    }
   }
 
   if (currentPage === 'download') {
-    return <DownloadApp onBack={() => navigateTo('home', '/')} />
+    return <DownloadApp onBack={() => navigateTo('game', '/')} />
   }
 
   return (
-    <div className="relative min-h-screen bg-[#030703] text-gray-200 overflow-x-hidden">
-      <Navbar onNavigateToDownload={() => navigateTo('download', '/download')} />
-      <main>
-        <Hero onNavigateToDownload={() => navigateTo('download', '/download')} />
-        <About />
-        <Skills />
-        <Projects onNavigateToDownload={() => navigateTo('download', '/download')} />
-        <Experience />
-        <Education />
-        <Contact />
-      </main>
-      <Footer onNavigateToDownload={() => navigateTo('download', '/download')} />
+    <div className="relative w-screen h-screen overflow-hidden bg-[#050713] text-slate-100 font-sans select-none">
+      {isGameMode ? (
+        <>
+          {/* Main 60 FPS Game World Canvas */}
+          <GameCanvas
+            engineRef={engineRef}
+            onScoreUpdate={(newScore) => setScore(newScore)}
+            onLevelChange={(newLevel) => setCurrentLevel(newLevel)}
+            onOpenModal={(modalInfo) => setActiveModal(modalInfo)}
+            onNearbyPortal={(portal) => setNearbyPortal(portal)}
+          />
+
+          {/* Interactive Game HUD Overlay */}
+          <GameHUD
+            score={score}
+            currentLevel={currentLevel}
+            nearbyPortal={nearbyPortal}
+            onWarpToLevel={handleWarpToLevel}
+            onToggleViewMode={() => setIsGameMode(false)}
+            isGameMode={isGameMode}
+            engineRef={engineRef}
+            onOpenHelp={() => setActiveModal({ type: 'help' })}
+          />
+        </>
+      ) : (
+        /* Traditional Recruiter Grid Document View */
+        <div className="w-full h-full overflow-y-auto">
+          <RecruiterView onSwitchToGame={() => setIsGameMode(true)} />
+        </div>
+      )}
+
+      {/* Interactive Modal Popup Viewer */}
+      <ModalViewer
+        activeModal={activeModal}
+        onClose={() => setActiveModal(null)}
+      />
     </div>
   )
 }
