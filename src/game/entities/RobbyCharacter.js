@@ -2,8 +2,8 @@
 // Uses actual sprite sheet image (robby-slides.png) just like the original site
 // Maps animation states to frame positions in the sheet
 
-import spriteSheetUrl from '../../assets/image1.png'
-import eyesCloseUrl from '../../assets/image copy 2.png'
+import spriteSheetUrl from '../../assets/robby-slides.png'
+import eyesCloseUrl from '../../assets/eyes-closed.png'
 
 // Sprite sheet configuration for image1.png (2048x397: 12 cols x 2 rows)
 const COLS = 12

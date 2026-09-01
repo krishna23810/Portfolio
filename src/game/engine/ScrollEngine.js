@@ -2,7 +2,7 @@ import { ParallaxBackground } from './ParallaxBackground'
 import { BIOMES, WORLD_LENGTH } from '../levels/levelData'
 import { soundManager } from '../audio/SoundManager'
 import { drawRobbyCharacter } from '../entities/RobbyCharacter'
-import plantSkillSrc from '../../assets/image copy 7.png'
+import plantSkillSrc from '../../assets/plant-skill.png'
 import gateSrc from '../../assets/gate.png'
 import grassEdgeSrc from '../../assets/grass-edge.png'
 

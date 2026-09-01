@@ -1,11 +1,14 @@
 // Robby Leonardi 1:1 Parallax Scene Engine with Real Asset Images
 // Multi-layer parallax: Clouds (0.2x) -> Mountains (0.5x) -> Mid Trees (0.8x) -> Foreground (1.0x)
 
-import mountainSrc from '../../assets/image copy.png'
-import treePillSrc from '../../assets/image copy 3.png'
-import treeMedSrc from '../../assets/image copy 4.png'
-import treeBushSrc from '../../assets/image copy 5.png'
-import plantSkillSrc from '../../assets/image copy 7.png'
+import mountainSrc from '../../assets/mountain.png'
+import treePillSrc from '../../assets/tree-pill.png'
+import treeMedSrc from '../../assets/tree-medium.png'
+import treeBushSrc from '../../assets/tree-bush.png'
+import plantSkillSrc from '../../assets/plant-skill.png'
+// import titleKKSrc from '../../assets/Frame 1.png'
+import titleKKSrc from '../../assets/image-Photoroom (1).png'
+import titleAgrawalSrc from '../../assets/image-Photoroom.png'
 
 // Preload image assets
 const mountainImg = new Image()
@@ -22,6 +25,12 @@ treeBushImg.src = treeBushSrc
 
 const plantSkillImg = new Image()
 plantSkillImg.src = plantSkillSrc
+
+const titleKKImg = new Image()
+titleKKImg.src = titleKKSrc
+
+const titleAgrawalImg = new Image()
+titleAgrawalImg.src = titleAgrawalSrc
 
 export class ParallaxBackground {
   constructor() {
@@ -244,92 +253,77 @@ export class ParallaxBackground {
     ctx.restore()
 
     // -------------------------------------------------------------
-    // B. RED RIBBON BANNER ("Interactive Resume of")
+    // B. ROBBY LEONARDI 1:1 RED RIBBON BANNER
     // -------------------------------------------------------------
     ctx.save()
-    const ribbonY = groundY - 420
-    const ribbonW = 380
-    const ribbonH = 50
-    const ribbonX = titleCenterX - ribbonW / 2
+    const ribbonW = 390
+    const ribbonH = 46
+    const ribbonCenterX = titleCenterX - 10
+    const ribbonY = groundY - 460
+    const ribbonX = ribbonCenterX - ribbonW / 2
 
-    // Ribbon Tails
-    ctx.fillStyle = '#b91c1c'
+    // Left Ribbon Tail Fold
+    ctx.fillStyle = '#9b111e'
     ctx.beginPath()
-    ctx.moveTo(ribbonX - 32, ribbonY + 16)
-    ctx.lineTo(ribbonX + 10, ribbonY + 16)
-    ctx.lineTo(ribbonX + 10, ribbonY + ribbonH + 16)
-    ctx.lineTo(ribbonX - 32, ribbonY + ribbonH + 16)
-    ctx.lineTo(ribbonX - 16, ribbonY + ribbonH / 2 + 16)
+    ctx.moveTo(ribbonX - 32, ribbonY + 14)
+    ctx.lineTo(ribbonX + 10, ribbonY + 14)
+    ctx.lineTo(ribbonX + 10, ribbonY + ribbonH + 14)
+    ctx.lineTo(ribbonX - 32, ribbonY + ribbonH + 14)
+    ctx.lineTo(ribbonX - 16, ribbonY + ribbonH / 2 + 14)
     ctx.closePath()
     ctx.fill()
 
+    // Right Ribbon Tail Fold
     ctx.beginPath()
-    ctx.moveTo(ribbonX + ribbonW + 32, ribbonY + 16)
-    ctx.lineTo(ribbonX + ribbonW - 10, ribbonY + 16)
-    ctx.lineTo(ribbonX + ribbonW - 10, ribbonY + ribbonH + 16)
-    ctx.lineTo(ribbonX + ribbonW + 32, ribbonY + ribbonH + 16)
-    ctx.lineTo(ribbonX + ribbonW + 16, ribbonY + ribbonH / 2 + 16)
+    ctx.moveTo(ribbonX + ribbonW + 32, ribbonY + 14)
+    ctx.lineTo(ribbonX - 10 + ribbonW, ribbonY + 14)
+    ctx.lineTo(ribbonX - 10 + ribbonW, ribbonY + ribbonH + 14)
+    ctx.lineTo(ribbonX + ribbonW + 32, ribbonY + ribbonH + 14)
+    ctx.lineTo(ribbonX + ribbonW + 16, ribbonY + ribbonH / 2 + 14)
     ctx.closePath()
     ctx.fill()
 
-    // Ribbon Body
+    // Main Ribbon Body (#ed1c24)
     ctx.fillStyle = '#ed1c24'
     ctx.fillRect(ribbonX, ribbonY, ribbonW, ribbonH)
-    ctx.fillStyle = '#f87171'
-    ctx.fillRect(ribbonX, ribbonY, ribbonW, 4)
-    ctx.fillStyle = '#b91c1c'
-    ctx.fillRect(ribbonX, ribbonY + ribbonH - 4, ribbonW, 4)
 
-    // Text: "Interactive Resume of"
+    // Ribbon Top Highlight & Bottom Shadow
+    ctx.fillStyle = '#f87171'
+    ctx.fillRect(ribbonX, ribbonY, ribbonW, 3)
+    ctx.fillStyle = '#b91c1c'
+    ctx.fillRect(ribbonX, ribbonY + ribbonH - 3, ribbonW, 3)
+
+    // Ribbon Text: "Interactive Resume of"
     ctx.fillStyle = '#ffffff'
-    ctx.font = 'italic bold 23px "Georgia", "Times New Roman", serif'
+    ctx.font = 'italic bold 21px "Georgia", "Times New Roman", serif'
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
-    ctx.fillText('Interactive Resume of', titleCenterX, ribbonY + ribbonH / 2 + 1)
+    ctx.fillText('Interactive Resume of', ribbonCenterX, ribbonY + ribbonH / 2 + 1)
     ctx.restore()
 
     // -------------------------------------------------------------
-    // C. 3D ISOMETRIC EXTRUDED TITLE (KRISHNAKANT / AGRAWAL)
+    // C. ROBBY LEONARDI 1:1 AUTHENTIC 3D TITLE ASSETS (Layered)
     // -------------------------------------------------------------
     ctx.save()
-    const titleY1 = groundY - 295
-    const titleY2 = groundY - 190
 
-    // 1. 3D Drop Shadow Extrusion in Deep Crimson
-    for (let offset = 140; offset >= 1; offset -= 2) {
-      const shadowColor = offset > 60 ? '#4a0b22' : '#6b0b2e'
-      ctx.fillStyle = shadowColor
-      ctx.font = '900 94px "Impact", "Arial Black", sans-serif'
-      ctx.textAlign = 'center'
-      ctx.fillText('KRISHNAKANT', titleCenterX + offset * 0.95, titleY1 + offset * 0.95)
-      ctx.fillText('AGRAWAL', titleCenterX + offset * 0.95, titleY2 + offset * 0.95)
+    // 1. KRISHNAKANT 3D Graphic (Top-Left Stagger)
+    if (titleKKImg.complete && titleKKImg.naturalWidth > 0) {
+      const w1 = 900
+      const h1 = w1 * (titleKKImg.naturalHeight / titleKKImg.naturalWidth)
+      const x1 = titleCenterX - w1 * 0.65
+      const y1 = groundY - h1 * 0.85
+      ctx.drawImage(titleKKImg, x1, y1, w1, h1)
     }
 
-    // 2. Beveled Extrusion Layer for KRISHNAKANT (Orange)
-    for (let s = 14; s >= 1; s--) {
-      ctx.fillStyle = '#d85f16'
-      ctx.font = '900 94px "Impact", "Arial Black", sans-serif'
-      ctx.textAlign = 'center'
-      ctx.fillText('KRISHNAKANT', titleCenterX + s, titleY1 + s)
+    // 2. AGRAWAL 3D Graphic (Bottom-Right Stagger, In Front with Full Visibility)
+    if (titleAgrawalImg.complete && titleAgrawalImg.naturalWidth > 0) {
+      const w2 = 620
+      const h2 = w2 * (titleAgrawalImg.naturalHeight / titleAgrawalImg.naturalWidth)
+      const x2 = titleCenterX - w2 * 0.24
+      const y2 = groundY - h2 * 0.65
+      ctx.drawImage(titleAgrawalImg, x2, y2, w2, h2)
     }
 
-    // Front Face of KRISHNAKANT (Warm Orange #ff981f)
-    ctx.fillStyle = '#ff981f'
-    ctx.font = '900 94px "Impact", "Arial Black", sans-serif'
-    ctx.textAlign = 'center'
-    ctx.fillText('KRISHNAKANT', titleCenterX, titleY1)
-
-    // 3. Beveled Extrusion Layer for AGRAWAL (Magenta/Rose)
-    for (let s = 14; s >= 1; s--) {
-      ctx.fillStyle = '#9e1b32'
-      ctx.font = '900 94px "Impact", "Arial Black", sans-serif'
-      ctx.textAlign = 'center'
-      ctx.fillText('AGRAWAL', titleCenterX + s, titleY2 + s)
-    }
-
-    // Front Face of AGRAWAL (Coral Rose #f26d7d)
-    ctx.fillStyle = '#f26d7d'
-    ctx.fillText('AGRAWAL', titleCenterX, titleY2)
     ctx.restore()
   }
 }

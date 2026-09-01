@@ -12,8 +12,40 @@
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
+
 /* Base custom utility styles */
 @layer base {
+
+  .long-shadow-text {
+    color: #f0647d;
+    font-family: Impact, "Arial Black", sans-serif;
+    font-size: clamp(3rem, 10vw, 8rem);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -0.06em;
+    text-shadow:
+      1px 1px 0 #a9003d,
+      2px 2px 0 #a9003d,
+      3px 3px 0 #a9003d,
+      4px 4px 0 #a9003d,
+      5px 5px 0 #a9003d,
+      6px 6px 0 #a9003d,
+      7px 7px 0 #a9003d,
+      8px 8px 0 #a9003d,
+      9px 9px 0 #a9003d,
+      10px 10px 0 #a9003d,
+      11px 11px 0 #a9003d,
+      12px 12px 0 #a9003d,
+      13px 13px 0 #a9003d,
+      14px 14px 0 #a9003d,
+      15px 15px 0 #a9003d,
+      16px 16px 0 #a9003d,
+      17px 17px 0 #a9003d,
+      18px 18px 0 #a9003d,
+      19px 19px 0 #a9003d,
+      20px 20px 0 #a9003d;
+  }
+
   html {
     scroll-behavior: smooth;
     color-scheme: dark;
@@ -32,13 +64,16 @@
     width: 6px;
     height: 6px;
   }
+
   ::-webkit-scrollbar-track {
     background: #050713;
   }
+
   ::-webkit-scrollbar-thumb {
     background: rgba(6, 182, 212, 0.3);
     border-radius: 4px;
   }
+
   ::-webkit-scrollbar-thumb:hover {
     background: rgba(6, 182, 212, 0.6);
   }
@@ -67,10 +102,13 @@
 
 /* Keyframe animations */
 @keyframes pulseGlow {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 0.4;
     transform: scale(1);
   }
+
   50% {
     opacity: 0.8;
     transform: scale(1.04);
@@ -78,9 +116,12 @@
 }
 
 @keyframes coinFloat {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(-6px);
   }

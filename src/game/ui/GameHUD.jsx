@@ -37,11 +37,10 @@ export default function GameHUD({
               <button
                 key={b.id}
                 onClick={() => onWarpToLevel(b.id)}
-                className={`px-2.5 py-1 rounded-lg text-[11px] font-black transition-all flex items-center gap-1 cursor-pointer ${
-                  isActive
-                    ? 'bg-yellow-400 text-black shadow-sm'
-                    : 'text-white/80 hover:text-white hover:bg-white/10'
-                }`}
+                className={`px-2.5 py-1 rounded-lg text-[11px] font-black transition-all flex items-center gap-1 cursor-pointer ${isActive
+                  ? 'bg-yellow-400 text-black shadow-sm'
+                  : 'text-white/80 hover:text-white hover:bg-white/10'
+                  }`}
               >
                 <span>{b.id === 2 ? '🌊 DIVE' : `LVL ${b.id}`}</span>
               </button>
