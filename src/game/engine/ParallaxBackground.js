@@ -233,7 +233,14 @@ export class ParallaxBackground {
     const ribbonW = 390
     const ribbonH = 46
     const ribbonCenterX = titleCenterX - 10
-    const ribbonY = groundY - 460
+
+    // Position ribbon cleanly above the 3D KRISHNA title letters
+    let kkTop = groundY - 540
+    if (titleKKImg.complete && titleKKImg.naturalWidth > 0) {
+      const h1 = 1020 * (titleKKImg.naturalHeight / titleKKImg.naturalWidth)
+      kkTop = groundY - h1 * 0.99
+    }
+    const ribbonY = kkTop - ribbonH - 16
     const ribbonX = ribbonCenterX - ribbonW / 2
 
     // Left Ribbon Tail Fold
@@ -282,10 +289,10 @@ export class ParallaxBackground {
 
     // 1. KRISHNAKANT 3D Graphic (Top-Left Stagger)
     if (titleKKImg.complete && titleKKImg.naturalWidth > 0) {
-      const w1 = 1020
+      const w1 = 1000
       const h1 = w1 * (titleKKImg.naturalHeight / titleKKImg.naturalWidth)
       const x1 = titleCenterX - w1 * 0.7
-      const y1 = groundY - h1 * 0.99
+      const y1 = groundY - h1 * 0.97
       ctx.drawImage(titleKKImg, x1, y1, w1, h1)
     }
     // right round bush (treeBushImg)
@@ -303,10 +310,10 @@ export class ParallaxBackground {
     }
     // 2. AGRAWAL 3D Graphic (Bottom-Right Stagger, In Front with Full Visibility)
     if (titleAgrawalImg.complete && titleAgrawalImg.naturalWidth > 0) {
-      const w2 = 920
+      const w2 = 900
       const h2 = w2 * (titleAgrawalImg.naturalHeight / titleAgrawalImg.naturalWidth)
       const x2 = titleCenterX - w2 * 0.55
-      const y2 = groundY - h2 * 0.9
+      const y2 = groundY - h2 * 0.88
       ctx.drawImage(titleAgrawalImg, x2, y2, w2, h2)
     }
 
