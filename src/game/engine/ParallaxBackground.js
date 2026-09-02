@@ -5,10 +5,12 @@ import mountainSrc from '../../assets/mountain.png'
 import treePillSrc from '../../assets/tree-pill.png'
 import treeMedSrc from '../../assets/tree-medium.png'
 import treeBushSrc from '../../assets/tree-bush.png'
+import treeSrc from '../../assets/tree.png'
 import plantSkillSrc from '../../assets/plant-skill.png'
+import darkgreen from '../../assets/tree-dark.png'
 // import titleKKSrc from '../../assets/Frame 1.png'
 import titleKKSrc from '../../assets/image-Photoroom (1).png'
-import titleAgrawalSrc from '../../assets/image-Photoroom.png'
+import titleAgrawalSrc from '../../assets/agrawal.png'
 
 // Preload image assets
 const mountainImg = new Image()
@@ -23,8 +25,14 @@ treeMedImg.src = treeMedSrc
 const treeBushImg = new Image()
 treeBushImg.src = treeBushSrc
 
+const treeImg = new Image()
+treeImg.src = treeSrc
+
 const plantSkillImg = new Image()
 plantSkillImg.src = plantSkillSrc
+
+const darkgreenImg = new Image()
+darkgreenImg.src = darkgreen
 
 const titleKKImg = new Image()
 titleKKImg.src = titleKKSrc
@@ -208,47 +216,13 @@ export class ParallaxBackground {
     // -------------------------------------------------------------
     ctx.save()
 
-    // 1. Far-left medium dome tree (treeMedImg)
-    if (treeMedImg.complete && treeMedImg.naturalWidth > 0) {
-      const treeW = 160
-      const treeH = treeW * (treeMedImg.naturalHeight / treeMedImg.naturalWidth)
-      ctx.drawImage(treeMedImg, titleCenterX - 560, groundY - treeH, treeW, treeH)
-    }
 
-    // 2. Giant center-left pill tree (treePillImg)
-    if (treePillImg.complete && treePillImg.naturalWidth > 0) {
-      const treeW = 200
-      const treeH = treeW * (treePillImg.naturalHeight / treePillImg.naturalWidth)
-      ctx.drawImage(treePillImg, titleCenterX - 420, groundY - treeH, treeW, treeH)
-    }
+
 
     // 3. Front-left round bush (treeBushImg)
-    if (treeBushImg.complete && treeBushImg.naturalWidth > 0) {
-      const bushW = 145
-      const bushH = bushW * (treeBushImg.naturalHeight / treeBushImg.naturalWidth)
-      ctx.drawImage(treeBushImg, titleCenterX - 280, groundY - bushH, bushW, bushH)
-    }
+
 
     // 4. Right-side pill tree & bush
-    if (treePillImg.complete && treePillImg.naturalWidth > 0) {
-      const treeW = 160
-      const treeH = treeW * (treePillImg.naturalHeight / treePillImg.naturalWidth)
-      ctx.drawImage(treePillImg, titleCenterX + 360, groundY - treeH, treeW, treeH)
-    }
-    if (treeBushImg.complete && treeBushImg.naturalWidth > 0) {
-      const bushW = 130
-      const bushH = bushW * (treeBushImg.naturalHeight / treeBushImg.naturalWidth)
-      ctx.drawImage(treeBushImg, titleCenterX + 220, groundY - bushH, bushW, bushH)
-    }
-
-    // 5. Level 1 Skill Stalk Plants (plantSkillImg)
-    if (plantSkillImg.complete && plantSkillImg.naturalWidth > 0) {
-      const plantW = 48
-      const plantH = plantW * (plantSkillImg.naturalHeight / plantSkillImg.naturalWidth)
-      ctx.drawImage(plantSkillImg, titleCenterX + 720, groundY - plantH, plantW, plantH)
-      ctx.drawImage(plantSkillImg, titleCenterX + 840, groundY - plantH * 0.85, plantW * 0.85, plantH * 0.85)
-      ctx.drawImage(plantSkillImg, titleCenterX + 960, groundY - plantH * 1.1, plantW * 1.1, plantH * 1.1)
-    }
 
     ctx.restore()
 
@@ -308,22 +282,87 @@ export class ParallaxBackground {
 
     // 1. KRISHNAKANT 3D Graphic (Top-Left Stagger)
     if (titleKKImg.complete && titleKKImg.naturalWidth > 0) {
-      const w1 = 900
+      const w1 = 1020
       const h1 = w1 * (titleKKImg.naturalHeight / titleKKImg.naturalWidth)
-      const x1 = titleCenterX - w1 * 0.65
-      const y1 = groundY - h1 * 0.85
+      const x1 = titleCenterX - w1 * 0.7
+      const y1 = groundY - h1 * 0.99
       ctx.drawImage(titleKKImg, x1, y1, w1, h1)
     }
+    // right round bush (treeBushImg)
+    if (darkgreenImg.complete && darkgreenImg.naturalWidth > 0) {
+      const bushW = 100
+      const bushH = bushW * (darkgreenImg.naturalHeight / darkgreenImg.naturalWidth)
+      ctx.drawImage(darkgreenImg, titleCenterX + 250, groundY - bushH, bushW, bushH)
+    }
 
+    // Right pill tree (treePillImg)
+    if (treePillImg.complete && treePillImg.naturalWidth > 0) {
+      const treeW = 200
+      const treeH = treeW * (treePillImg.naturalHeight / treePillImg.naturalWidth) * 0.8
+      ctx.drawImage(treePillImg, titleCenterX + 260, groundY - treeH, treeW, treeH)
+    }
     // 2. AGRAWAL 3D Graphic (Bottom-Right Stagger, In Front with Full Visibility)
     if (titleAgrawalImg.complete && titleAgrawalImg.naturalWidth > 0) {
-      const w2 = 620
+      const w2 = 920
       const h2 = w2 * (titleAgrawalImg.naturalHeight / titleAgrawalImg.naturalWidth)
-      const x2 = titleCenterX - w2 * 0.24
-      const y2 = groundY - h2 * 0.65
+      const x2 = titleCenterX - w2 * 0.55
+      const y2 = groundY - h2 * 0.9
       ctx.drawImage(titleAgrawalImg, x2, y2, w2, h2)
     }
 
+    // Far-left medium dome tree (treeMedImg)
+    if (darkgreenImg.complete && treeMedImg.naturalWidth > 0) {
+      const treeW = 150
+      const treeH = treeW * (treeMedImg.naturalHeight / treeMedImg.naturalWidth)
+      ctx.drawImage(treeMedImg, titleCenterX - 380, groundY - treeH, treeW, treeH)
+    }
+
+
+    // Left classic dome tree (treeImg) have to remove black background in this image  
+    if (treeImg.complete && treeImg.naturalWidth > 0) {
+      const treeW = 200
+      const treeH = treeW * (treeImg.naturalHeight / treeImg.naturalWidth) * 1.1
+      // use cuttreeImg for remove black background with mix bland mode
+      ctx.drawImage(treeImg, titleCenterX - 700, groundY - treeH, treeW, treeH)
+    }
+    // Left pill tree (treePillImg)
+    if (treePillImg.complete && treePillImg.naturalWidth > 0) {
+      const treeW = 220
+      const treeH = treeW * (treePillImg.naturalHeight / treePillImg.naturalWidth)
+      ctx.drawImage(treePillImg, titleCenterX - 560, groundY - treeH, treeW, treeH)
+    }
+
+    // Left round bush (treeBushImg)
+    // if (darkgreenImg.complete && darkgreenImg.naturalWidth > 0) {
+    //   const bushW = 145
+    //   const bushH = bushW * (darkgreenImg.naturalHeight / darkgreenImg.naturalWidth)
+    //   ctx.drawImage(darkgreenImg, titleCenterX - 450, groundY - bushH, bushW, bushH)
+    // }
+
+    // Right round bush (treeBushImg)
+    if (treeBushImg.complete && treeBushImg.naturalWidth > 0) {
+      const bushW = 130
+      const bushH = bushW * (treeBushImg.naturalHeight / treeBushImg.naturalWidth)
+      ctx.drawImage(treeBushImg, titleCenterX + 180, groundY - bushH, bushW, bushH)
+    }
+
+
+    // Right classic dome tree (treeImg)
+    if (treeImg.complete && treeImg.naturalWidth > 0) {
+      const treeW = 140
+      const treeH = treeW * (treeImg.naturalHeight / treeImg.naturalWidth)
+      ctx.drawImage(treeImg, titleCenterX + 420, groundY - treeH, treeW, treeH)
+    }
+
+
+    // 5. Level 1 Skill Stalk Plants (plantSkillImg)
+    if (plantSkillImg.complete && plantSkillImg.naturalWidth > 0) {
+      const plantW = 48
+      const plantH = plantW * (plantSkillImg.naturalHeight / plantSkillImg.naturalWidth)
+      ctx.drawImage(plantSkillImg, titleCenterX + 720, groundY - plantH, plantW, plantH)
+      ctx.drawImage(plantSkillImg, titleCenterX + 840, groundY - plantH * 0.85, plantW * 0.85, plantH * 0.85)
+      ctx.drawImage(plantSkillImg, titleCenterX + 960, groundY - plantH * 1.1, plantW * 1.1, plantH * 1.1)
+    }
     ctx.restore()
   }
 }
