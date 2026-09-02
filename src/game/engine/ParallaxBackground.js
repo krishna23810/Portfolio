@@ -233,37 +233,37 @@ export class ParallaxBackground {
     // B. ROBBY LEONARDI 1:1 RED RIBBON BANNER
     // -------------------------------------------------------------
     ctx.save()
-    const ribbonW = 450
-    const ribbonH = 46
+    const ribbonW = 405
+    const ribbonH = 42
     const ribbonCenterX = titleCenterX - 10
 
     // Position ribbon cleanly above the 3D KRISHNA title letters
-    let kkTop = groundY - 540
+    let kkTop = groundY - 500
     if (titleKKImg.complete && titleKKImg.naturalWidth > 0) {
-      const h1 = 1020 * (titleKKImg.naturalHeight / titleKKImg.naturalWidth)
-      kkTop = groundY - h1 * 0.99
+      const h1 = 900 * (titleKKImg.naturalHeight / titleKKImg.naturalWidth)
+      kkTop = groundY - h1 * 0.97
     }
-    const ribbonY = kkTop - ribbonH - 16
+    const ribbonY = kkTop - ribbonH - 14
     const ribbonX = ribbonCenterX - ribbonW / 2
 
     // Left Ribbon Tail Fold
     ctx.fillStyle = '#9b111e'
     ctx.beginPath()
-    ctx.moveTo(ribbonX - 32, ribbonY + 14)
-    ctx.lineTo(ribbonX + 10, ribbonY + 14)
-    ctx.lineTo(ribbonX + 10, ribbonY + ribbonH + 14)
-    ctx.lineTo(ribbonX - 32, ribbonY + ribbonH + 14)
-    ctx.lineTo(ribbonX - 16, ribbonY + ribbonH / 2 + 14)
+    ctx.moveTo(ribbonX - 28, ribbonY + 12)
+    ctx.lineTo(ribbonX + 10, ribbonY + 12)
+    ctx.lineTo(ribbonX + 10, ribbonY + ribbonH + 12)
+    ctx.lineTo(ribbonX - 28, ribbonY + ribbonH + 12)
+    ctx.lineTo(ribbonX - 14, ribbonY + ribbonH / 2 + 12)
     ctx.closePath()
     ctx.fill()
 
     // Right Ribbon Tail Fold
     ctx.beginPath()
-    ctx.moveTo(ribbonX + ribbonW + 32, ribbonY + 14)
-    ctx.lineTo(ribbonX - 10 + ribbonW, ribbonY + 14)
-    ctx.lineTo(ribbonX - 10 + ribbonW, ribbonY + ribbonH + 14)
-    ctx.lineTo(ribbonX + ribbonW + 32, ribbonY + ribbonH + 14)
-    ctx.lineTo(ribbonX + ribbonW + 16, ribbonY + ribbonH / 2 + 14)
+    ctx.moveTo(ribbonX + ribbonW + 28, ribbonY + 12)
+    ctx.lineTo(ribbonX - 10 + ribbonW, ribbonY + 12)
+    ctx.lineTo(ribbonX - 10 + ribbonW, ribbonY + ribbonH + 12)
+    ctx.lineTo(ribbonX + ribbonW + 28, ribbonY + ribbonH + 12)
+    ctx.lineTo(ribbonX + ribbonW + 14, ribbonY + ribbonH / 2 + 12)
     ctx.closePath()
     ctx.fill()
 
@@ -277,9 +277,9 @@ export class ParallaxBackground {
     ctx.fillStyle = '#b91c1c'
     ctx.fillRect(ribbonX, ribbonY + ribbonH - 3, ribbonW, 3)
 
-    // Ribbon Text: "Interactive Resume of"
+    // Ribbon Text
     ctx.fillStyle = '#ffffff'
-    ctx.font = 'italic bold 21px "Georgia", "Times New Roman", serif'
+    ctx.font = 'italic bold 19px "Georgia", "Times New Roman", serif'
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
     ctx.fillText('Welcome to my Interactive Resume', ribbonCenterX, ribbonY + ribbonH / 2 + 1)
@@ -292,87 +292,80 @@ export class ParallaxBackground {
 
     // 1. KRISHNAKANT 3D Graphic (Top-Left Stagger)
     if (titleKKImg.complete && titleKKImg.naturalWidth > 0) {
-      const w1 = 1000
+      const w1 = 900
       const h1 = w1 * (titleKKImg.naturalHeight / titleKKImg.naturalWidth)
       const x1 = titleCenterX - w1 * 0.7
       const y1 = groundY - h1 * 0.97
       ctx.drawImage(titleKKImg, x1, y1, w1, h1)
     }
-    // right round bush (treeBushImg)
+
+    // right round bush
     if (darkgreenImg.complete && darkgreenImg.naturalWidth > 0) {
-      const bushW = 100
+      const bushW = 90
       const bushH = bushW * (darkgreenImg.naturalHeight / darkgreenImg.naturalWidth)
-      ctx.drawImage(darkgreenImg, titleCenterX + 250, groundY - bushH, bushW, bushH)
+      ctx.drawImage(darkgreenImg, titleCenterX + 225, groundY - bushH, bushW, bushH)
     }
 
-    // Right pill tree (treePillImg)
+    // Right pill tree
     if (treePillImg.complete && treePillImg.naturalWidth > 0) {
-      const treeW = 200
+      const treeW = 180
       const treeH = treeW * (treePillImg.naturalHeight / treePillImg.naturalWidth) * 0.8
-      ctx.drawImage(treePillImg, titleCenterX + 260, groundY - treeH, treeW, treeH)
+      ctx.drawImage(treePillImg, titleCenterX + 235, groundY - treeH, treeW, treeH)
     }
-    // 2. AGRAWAL 3D Graphic (Bottom-Right Stagger, In Front with Full Visibility)
+
+    // 2. AGRAWAL 3D Graphic (Bottom-Right Stagger)
     if (titleAgrawalImg.complete && titleAgrawalImg.naturalWidth > 0) {
-      const w2 = 900
+      const w2 = 810
       const h2 = w2 * (titleAgrawalImg.naturalHeight / titleAgrawalImg.naturalWidth)
       const x2 = titleCenterX - w2 * 0.55
       const y2 = groundY - h2 * 0.88
       ctx.drawImage(titleAgrawalImg, x2, y2, w2, h2)
     }
 
-    // Far-left medium dome tree (treeMedImg)
+    // Far-left medium dome tree
     if (darkgreenImg.complete && treeMedImg.naturalWidth > 0) {
-      const treeW = 150
+      const treeW = 135
       const treeH = treeW * (treeMedImg.naturalHeight / treeMedImg.naturalWidth)
-      ctx.drawImage(treeMedImg, titleCenterX - 380, groundY - treeH, treeW, treeH)
+      ctx.drawImage(treeMedImg, titleCenterX - 350, groundY - treeH, treeW, treeH)
     }
 
-
-    // Left classic dome tree (treeImg) have to remove black background in this image  
+    // Left classic dome tree
     if (treeImg.complete && treeImg.naturalWidth > 0) {
-      const treeW = 200
+      const treeW = 180
       const treeH = treeW * (treeImg.naturalHeight / treeImg.naturalWidth) * 1.1
-      // use cuttreeImg for remove black background with mix bland mode
-      ctx.drawImage(treeImg, titleCenterX - 700, groundY - treeH, treeW, treeH)
+      ctx.drawImage(treeImg, titleCenterX - 630, groundY - treeH, treeW, treeH)
     }
-    // Left pill tree (treePillImg)
+
+    // Left pill tree
     if (treePillImg.complete && treePillImg.naturalWidth > 0) {
-      const treeW = 220
+      const treeW = 198
       const treeH = treeW * (treePillImg.naturalHeight / treePillImg.naturalWidth)
-      ctx.drawImage(treePillImg, titleCenterX - 560, groundY - treeH, treeW, treeH)
+      ctx.drawImage(treePillImg, titleCenterX - 510, groundY - treeH, treeW, treeH)
     }
 
-    // Left round bush (treeBushImg)
-    // if (darkgreenImg.complete && darkgreenImg.naturalWidth > 0) {
-    //   const bushW = 145
-    //   const bushH = bushW * (darkgreenImg.naturalHeight / darkgreenImg.naturalWidth)
-    //   ctx.drawImage(darkgreenImg, titleCenterX - 450, groundY - bushH, bushW, bushH)
-    // }
-
-    // Right round bush (treeBushImg)
+    // Right round bush
     if (treeBushImg.complete && treeBushImg.naturalWidth > 0) {
-      const bushW = 130
+      const bushW = 117
       const bushH = bushW * (treeBushImg.naturalHeight / treeBushImg.naturalWidth)
-      ctx.drawImage(treeBushImg, titleCenterX + 180, groundY - bushH, bushW, bushH)
+      ctx.drawImage(treeBushImg, titleCenterX + 165, groundY - bushH, bushW, bushH)
     }
 
-
-    // Right classic dome tree (treeImg)
+    // Right classic dome tree
     if (treeImg.complete && treeImg.naturalWidth > 0) {
-      const treeW = 140
+      const treeW = 126
       const treeH = treeW * (treeImg.naturalHeight / treeImg.naturalWidth)
-      ctx.drawImage(treeImg, titleCenterX + 420, groundY - treeH, treeW, treeH)
+      ctx.drawImage(treeImg, titleCenterX + 380, groundY - treeH, treeW, treeH)
     }
 
 
     // 5. Level 1 Skill Stalk Plants (plantSkillImg)
-    if (plantSkillImg.complete && plantSkillImg.naturalWidth > 0) {
-      const plantW = 48
-      const plantH = plantW * (plantSkillImg.naturalHeight / plantSkillImg.naturalWidth)
-      ctx.drawImage(plantSkillImg, titleCenterX + 720, groundY - plantH, plantW, plantH)
-      ctx.drawImage(plantSkillImg, titleCenterX + 840, groundY - plantH * 0.85, plantW * 0.85, plantH * 0.85)
-      ctx.drawImage(plantSkillImg, titleCenterX + 960, groundY - plantH * 1.1, plantW * 1.1, plantH * 1.1)
-    }
+    // if (plantSkillImg.complete && plantSkillImg.naturalWidth > 0) {
+    //   const plantW = 48
+    //   const plantH = plantW * (plantSkillImg.naturalHeight / plantSkillImg.naturalWidth)
+    //   ctx.drawImage(plantSkillImg, titleCenterX + 720, groundY - plantH, plantW, plantH)
+    //   ctx.drawImage(plantSkillImg, titleCenterX + 840, groundY - plantH * 0.85, plantW * 0.85, plantH * 0.85)
+    //   ctx.drawImage(plantSkillImg, titleCenterX + 960, groundY - plantH * 1.1, plantW * 1.1, plantH * 1.1)
+    // }
     ctx.restore()
   }
 }
