@@ -484,14 +484,14 @@ export class ScrollEngine {
 
       this.ctx.drawImage(gateImg, gateX, gateY, gateW, gateH)
 
-      // Gate Text in bold white on top arch
+      // Gate Text in bold rounded white on top arch (exact 1:1 Robby Leonardi style)
       this.ctx.fillStyle = '#ffffff'
-      this.ctx.font = '900 50px "Impact", "Arial Black", "Rubik", sans-serif'
+      this.ctx.font = '900 60px "Fredoka", "Arial Rounded MT Bold", "Nunito", sans-serif'
       this.ctx.textAlign = 'center'
       this.ctx.textBaseline = 'middle'
-      this.ctx.shadowColor = 'rgba(0,0,0,0.25)'
-      this.ctx.shadowBlur = 3
-      this.ctx.fillText(text, gateX + gateW * 0.46, gateY + gateH * 0.19)
+      this.ctx.shadowColor = 'transparent'
+      this.ctx.shadowBlur = 0
+      this.ctx.fillText(text, gateX + gateW * 0.435, gateY + gateH * 0.165)
     } else {
       // Gate Columns fallback
       this.ctx.fillStyle = '#64748b'
