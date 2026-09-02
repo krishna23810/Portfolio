@@ -72,7 +72,7 @@ export class ParallaxBackground {
     }
   }
 
-  draw(ctx, width, height, cameraX, currentBiome) {
+  draw(ctx, width, height, cameraX, currentBiome, cameraY = 0) {
     const groundY = height * 0.80
     const isUnderwater = cameraX >= 2400 && cameraX < 5000
     const isFactory = cameraX >= 5000 && cameraX < 7400
@@ -161,7 +161,7 @@ export class ParallaxBackground {
 
     // 4. PARALLAX LAYER 3: TITLE SCENE & FOREGROUND ASSETS (1.0x Speed)
     if (cameraX < 2400) {
-      this.drawTitleScene(ctx, width, height, cameraX, groundY)
+      this.drawTitleScene(ctx, width, height, cameraX, groundY, cameraY)
     }
   }
 
@@ -208,7 +208,10 @@ export class ParallaxBackground {
     ctx.restore()
   }
 
-  drawTitleScene(ctx, width, height, cameraX, groundY) {
+  drawTitleScene(ctx, width, height, cameraX, groundY, cameraY = 0) {
+    // Hide title elements when the camera is panned high in the sky during the loading screen
+    if (cameraY > height * 0.35) return
+
     const titleCenterX = width * 0.5 - cameraX
 
     // -------------------------------------------------------------
@@ -230,7 +233,7 @@ export class ParallaxBackground {
     // B. ROBBY LEONARDI 1:1 RED RIBBON BANNER
     // -------------------------------------------------------------
     ctx.save()
-    const ribbonW = 390
+    const ribbonW = 450
     const ribbonH = 46
     const ribbonCenterX = titleCenterX - 10
 
@@ -279,7 +282,7 @@ export class ParallaxBackground {
     ctx.font = 'italic bold 21px "Georgia", "Times New Roman", serif'
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
-    ctx.fillText('Interactive Resume of', ribbonCenterX, ribbonY + ribbonH / 2 + 1)
+    ctx.fillText('Welcome to my Interactive Resume', ribbonCenterX, ribbonY + ribbonH / 2 + 1)
     ctx.restore()
 
     // -------------------------------------------------------------

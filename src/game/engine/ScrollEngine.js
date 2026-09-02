@@ -250,7 +250,7 @@ export class ScrollEngine {
     this.ctx.translate(0, this.cameraY)
 
     // Parallax Background & Sky elements
-    this.bg.draw(this.ctx, this.width, this.height, this.cameraX, currentBiome)
+    this.bg.draw(this.ctx, this.width, this.height, this.cameraX, currentBiome, this.cameraY)
 
     // Multi-Level Scenery & Ground
     this.drawWorldScenery(currentBiome)
