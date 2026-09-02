@@ -185,7 +185,7 @@ export class ParallaxBackground {
 
     ctx.save()
     // Mountains move at 0.45x camera speed for deep background parallax
-    const mtnParallaxX = -cameraX * 0.8
+    const mtnParallaxX = -cameraX * 0.5
 
     // Mountain 1 (Large main mountain behind Level 1)
     const mtn1X = width * 0.5 + 220 + mtnParallaxX
@@ -194,13 +194,13 @@ export class ParallaxBackground {
     ctx.drawImage(mountainImg, mtn1X, groundY - mtn1H, mtn1W, mtn1H)
 
     // Mountain 2 (Smaller distant mountain)
-    const mtn2X = width * 0.5 + 1100 + mtnParallaxX
-    const mtn2W = 420
+    const mtn2X = width * 0.5 + 2000 + mtnParallaxX
+    const mtn2W = 520
     const mtn2H = mtn2W * (mountainImg.naturalHeight / mountainImg.naturalWidth)
     ctx.drawImage(mountainImg, mtn2X, groundY - mtn2H, mtn2W, mtn2H)
 
     // Mountain 3 (Third distant peak before ocean)
-    const mtn3X = width * 0.5 + 2000 + mtnParallaxX
+    const mtn3X = width * 0.5 + 3000 + mtnParallaxX
     const mtn3W = 480
     const mtn3H = mtn3W * (mountainImg.naturalHeight / mountainImg.naturalWidth)
     ctx.drawImage(mountainImg, mtn3X, groundY - mtn3H, mtn3W, mtn3H)

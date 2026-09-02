@@ -408,10 +408,10 @@ export class ScrollEngine {
     }
 
     // =========================================================================
-    // LEVEL 1: ROBBY LEONARDI SKILL PLANTS & MEASUREMENT BARS (X: 1800 - 3000)
+    // LEVEL 1: ROBBY LEONARDI SKILL PLANTS & MEASUREMENT BARS (X: 2300 - 3200)
     // =========================================================================
-    this.drawGate(1700, 'LEVEL 1', '#e52d27', groundY)
-    this.drawSkillPlants(2100, groundY)
+    this.drawGate(2300, 'LEVEL 1', '#e52d27', groundY)
+    this.drawSkillPlants(2700, groundY)
 
     // =========================================================================
     // LEVEL 2: DEEP SEA SUBMARINE DIVE - WEBRTC & LOOTLO (X: 3200 - 5600)
@@ -477,7 +477,7 @@ export class ScrollEngine {
     this.ctx.save()
 
     if (gateImg.complete && gateImg.naturalWidth > 0) {
-      const gateW = 210
+      const gateW = 340
       const gateH = gateW * (gateImg.naturalHeight / gateImg.naturalWidth)
       const gateX = screenX
       const gateY = gY - gateH
@@ -486,7 +486,7 @@ export class ScrollEngine {
 
       // Gate Text in bold white on top arch
       this.ctx.fillStyle = '#ffffff'
-      this.ctx.font = '900 24px "Impact", "Arial Black", "Rubik", sans-serif'
+      this.ctx.font = '900 50px "Impact", "Arial Black", "Rubik", sans-serif'
       this.ctx.textAlign = 'center'
       this.ctx.textBaseline = 'middle'
       this.ctx.shadowColor = 'rgba(0,0,0,0.25)'
