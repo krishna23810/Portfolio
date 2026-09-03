@@ -193,8 +193,8 @@ export class ScrollEngine {
     this.cameraX = this.worldX
 
     // Mode transitions
-    this.isSubmarine = this.worldX >= 3100 && this.worldX < 5800
-    this.isFlying = this.worldX >= 7800
+    this.isSubmarine = this.worldX >= 4400 && this.worldX < 7100
+    this.isFlying = this.worldX >= 8900
 
     const currentBiomeIdx = BIOMES.findIndex(
       (b) => this.worldX >= b.startX && this.worldX < b.endX
@@ -447,13 +447,13 @@ export class ScrollEngine {
     }
 
     // 3. Robby Leonardi Skill Plants
-    this.drawSkillPlants(3250, groundY)
+    this.drawSkillPlants(3350, groundY)
 
     // =========================================================================
-    // LEVEL 2: DEEP SEA SUBMARINE DIVE - WEBRTC & LOOTLO (X: 3200 - 5600)
+    // LEVEL 2: DEEP SEA SUBMARINE DIVE - WEBRTC & LOOTLO (X: 4600 - 7100)
     // =========================================================================
-    this.drawGate(3200, 'LEVEL 2', '#0284c7')
-    this.drawProjectShowcase(3700, {
+    this.drawGate(4600, 'LEVEL 2', '#0284c7', groundY)
+    this.drawProjectShowcase(5200, {
       tag: 'FLAGSHIP WEBRTC APP',
       title: 'GHOST CALL',
       subtitle: 'Sub-40ms P2P Encrypted Video Call',
@@ -462,7 +462,7 @@ export class ScrollEngine {
       url: 'https://ghost-call-ten.vercel.app/',
     })
 
-    this.drawProjectShowcase(4700, {
+    this.drawProjectShowcase(6200, {
       tag: 'REAL-TIME MULTIPLAYER',
       title: 'LOOTLO',
       subtitle: 'Synchronized Game Room Engine',
@@ -472,10 +472,10 @@ export class ScrollEngine {
     })
 
     // =========================================================================
-    // LEVEL 3: WORKING EXPERIENCE - TRISX & SUBCIDYS SAAS (X: 5800 - 7600)
+    // LEVEL 3: WORKING EXPERIENCE - TRISX & SUBCIDYS SAAS (X: 7300 - 8900)
     // =========================================================================
-    this.drawGate(5800, 'LEVEL 3', '#d97706')
-    this.drawExperienceSection(6300, {
+    this.drawGate(7300, 'LEVEL 3', '#d97706', groundY)
+    this.drawExperienceSection(7900, {
       dates: 'August 2024 - Present',
       company: 'TRISX TECHNOLOGIES',
       role: 'Full Stack Developer Intern (Subcidys MSME SaaS)',
@@ -488,10 +488,10 @@ export class ScrollEngine {
     })
 
     // =========================================================================
-    // LEVEL 4: CLOUD AIRSHIP, APK & CONTACT (X: 7800 - 10500)
+    // LEVEL 4: CLOUD AIRSHIP, APK & CONTACT (X: 9100 - 10900)
     // =========================================================================
-    this.drawGate(7800, 'LEVEL 4', '#8b5cf6')
-    this.drawProjectShowcase(8300, {
+    this.drawGate(9100, 'LEVEL 4', '#8b5cf6', groundY)
+    this.drawProjectShowcase(9700, {
       tag: 'FLUTTER ANDROID APPLICATION',
       title: 'TRAVEL PLANNER',
       subtitle: 'Android Mobile App (55.37 MB APK)',
@@ -502,7 +502,7 @@ export class ScrollEngine {
     })
 
     // Final Victory & Contact Cloud Form
-    this.drawVictoryCastle(9600)
+    this.drawVictoryCastle(11000)
   }
 
   drawGate(startX, text, color, groundY) {

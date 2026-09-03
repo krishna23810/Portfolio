@@ -74,10 +74,10 @@ export class ParallaxBackground {
 
   draw(ctx, width, height, cameraX, currentBiome, cameraY = 0) {
     const groundY = height * 0.80
-    const isUnderwater = cameraX >= 4200 && cameraX < 6800
-    const isFactory = cameraX >= 6800 && cameraX < 8800
-    const isSky = cameraX >= 8800 && cameraX < 10600
-    const isCastle = cameraX >= 10600
+    const isUnderwater = cameraX >= 4400 && cameraX < 7100
+    const isFactory = cameraX >= 7100 && cameraX < 8900
+    const isSky = cameraX >= 8900 && cameraX < 10900
+    const isCastle = cameraX >= 10900
 
     // 1. SKY / BIOME GRADIENTS
     if (isUnderwater) {
