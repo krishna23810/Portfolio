@@ -21,8 +21,9 @@ export class ScrollEngine {
     this.ctx = canvas.getContext('2d')
     this.callbacks = callbacks
 
-    this.width = canvas.width
-    this.height = canvas.height
+    this.dpr = Math.min(window.devicePixelRatio || 1, 2.5)
+    this.width = canvas.width / this.dpr || window.innerWidth
+    this.height = canvas.height / this.dpr || window.innerHeight
 
     // Scroll progress & smooth momentum physics
     this.scrollProgress = 0
@@ -71,11 +72,10 @@ export class ScrollEngine {
     window.addEventListener('touchend', this.handleTouchEnd)
   }
 
-  resize(width, height) {
+  resize(width, height, dpr = Math.min(window.devicePixelRatio || 1, 2.5)) {
+    this.dpr = dpr
     this.width = width
     this.height = height
-    this.canvas.width = width
-    this.canvas.height = height
     if (this.isLoading) {
       this.cameraY = height * 0.85
       this.targetCameraY = height * 0.85
@@ -240,6 +240,11 @@ export class ScrollEngine {
       (b) => this.worldX >= b.startX && this.worldX < b.endX
     )
     const currentBiome = BIOMES[currentBiomeIdx] || BIOMES[0]
+
+    // Scale context to devicePixelRatio for crystal sharp text, vector curves, and raster assets
+    this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0)
+    this.ctx.imageSmoothingEnabled = true
+    this.ctx.imageSmoothingQuality = 'high'
 
     // 1. Clear with Cyan Sky background
     this.ctx.fillStyle = '#00bff3'

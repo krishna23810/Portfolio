@@ -16,10 +16,17 @@ export default function GameCanvas({
     const updateSize = () => {
       const parent = canvas.parentElement
       if (parent) {
-        canvas.width = parent.clientWidth
-        canvas.height = parent.clientHeight || window.innerHeight
+        const cssWidth = parent.clientWidth
+        const cssHeight = parent.clientHeight || window.innerHeight
+        const dpr = Math.min(window.devicePixelRatio || 1, 2.5)
+
+        canvas.width = Math.round(cssWidth * dpr)
+        canvas.height = Math.round(cssHeight * dpr)
+        canvas.style.width = `${cssWidth}px`
+        canvas.style.height = `${cssHeight}px`
+
         if (engineRef.current) {
-          engineRef.current.resize(canvas.width, canvas.height)
+          engineRef.current.resize(cssWidth, cssHeight, dpr)
         }
       }
     }
