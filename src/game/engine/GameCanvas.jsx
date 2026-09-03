@@ -50,8 +50,8 @@ export default function GameCanvas({
       const clickY = e.clientY - rect.top
       const worldClickX = engine.cameraX + clickX
 
-      // Check Ghost Call area (5080 - 5500)
-      if (worldClickX >= 5080 && worldClickX <= 5500 && clickY >= 140 && clickY <= 420) {
+      // Check Ghost Call area (6080 - 6500)
+      if (worldClickX >= 6080 && worldClickX <= 6500 && clickY >= 140 && clickY <= 420) {
         if (onOpenModal) {
           onOpenModal({
             type: 'project',
@@ -69,8 +69,8 @@ export default function GameCanvas({
         }
       }
 
-      // Check Subcidys area (7780 - 8200)
-      if (worldClickX >= 7780 && worldClickX <= 8200 && clickY >= 140 && clickY <= 420) {
+      // Check Subcidys area (8880 - 9300)
+      if (worldClickX >= 8880 && worldClickX <= 9300 && clickY >= 140 && clickY <= 420) {
         if (onOpenModal) {
           onOpenModal({
             type: 'experience',
@@ -85,8 +85,8 @@ export default function GameCanvas({
         }
       }
 
-      // Check Travel Planner APK area (9580 - 10000)
-      if (worldClickX >= 9580 && worldClickX <= 10000 && clickY >= 140 && clickY <= 420) {
+      // Check Travel Planner APK area (10680 - 11100)
+      if (worldClickX >= 10680 && worldClickX <= 11100 && clickY >= 140 && clickY <= 420) {
         if (onOpenModal) {
           onOpenModal({
             type: 'download',
@@ -101,8 +101,8 @@ export default function GameCanvas({
         }
       }
 
-      // Check Victory Castle / Contact area (10880 - 11350)
-      if (worldClickX >= 10880 && worldClickX <= 11350 && clickY >= 130 && clickY <= 430) {
+      // Check Victory Castle / Contact area (11980 - 12450)
+      if (worldClickX >= 11980 && worldClickX <= 12450 && clickY >= 130 && clickY <= 430) {
         if (onOpenModal) {
           onOpenModal({
             type: 'contact',

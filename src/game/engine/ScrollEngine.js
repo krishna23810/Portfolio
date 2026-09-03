@@ -193,8 +193,8 @@ export class ScrollEngine {
     this.cameraX = this.worldX
 
     // Mode transitions
-    this.isSubmarine = this.worldX >= 4400 && this.worldX < 7100
-    this.isFlying = this.worldX >= 8900
+    this.isSubmarine = this.worldX >= 5400 && this.worldX < 8200
+    this.isFlying = this.worldX >= 10000
 
     const currentBiomeIdx = BIOMES.findIndex(
       (b) => this.worldX >= b.startX && this.worldX < b.endX
@@ -446,14 +446,14 @@ export class ScrollEngine {
       this.ctx.drawImage(treeBushImg, 2300 + 740 - this.cameraX, groundY - bushH * 1.1, bushW * 1.1, bushH * 1.1)
     }
 
-    // 3. Robby Leonardi Skill Plants
-    this.drawSkillPlants(3350, groundY)
+    // 3. Robby Leonardi Skill Plants (spaced with breathing room after ABOUT)
+    this.drawSkillPlants(3500, groundY)
 
     // =========================================================================
-    // LEVEL 2: DEEP SEA SUBMARINE DIVE - WEBRTC & LOOTLO (X: 4600 - 7100)
+    // LEVEL 2: DEEP SEA SUBMARINE DIVE - WEBRTC & LOOTLO (X: 5600 - 8200)
     // =========================================================================
-    this.drawGate(4600, 'LEVEL 2', '#0284c7', groundY)
-    this.drawProjectShowcase(5200, {
+    this.drawGate(5600, 'LEVEL 2', '#0284c7', groundY)
+    this.drawProjectShowcase(6200, {
       tag: 'FLAGSHIP WEBRTC APP',
       title: 'GHOST CALL',
       subtitle: 'Sub-40ms P2P Encrypted Video Call',
@@ -462,7 +462,7 @@ export class ScrollEngine {
       url: 'https://ghost-call-ten.vercel.app/',
     })
 
-    this.drawProjectShowcase(6200, {
+    this.drawProjectShowcase(7200, {
       tag: 'REAL-TIME MULTIPLAYER',
       title: 'LOOTLO',
       subtitle: 'Synchronized Game Room Engine',
@@ -472,10 +472,10 @@ export class ScrollEngine {
     })
 
     // =========================================================================
-    // LEVEL 3: WORKING EXPERIENCE - TRISX & SUBCIDYS SAAS (X: 7300 - 8900)
+    // LEVEL 3: WORKING EXPERIENCE - TRISX & SUBCIDYS SAAS (X: 8400 - 10000)
     // =========================================================================
-    this.drawGate(7300, 'LEVEL 3', '#d97706', groundY)
-    this.drawExperienceSection(7900, {
+    this.drawGate(8400, 'LEVEL 3', '#d97706', groundY)
+    this.drawExperienceSection(9000, {
       dates: 'August 2024 - Present',
       company: 'TRISX TECHNOLOGIES',
       role: 'Full Stack Developer Intern (Subcidys MSME SaaS)',
@@ -488,10 +488,10 @@ export class ScrollEngine {
     })
 
     // =========================================================================
-    // LEVEL 4: CLOUD AIRSHIP, APK & CONTACT (X: 9100 - 10900)
+    // LEVEL 4: CLOUD AIRSHIP, APK & CONTACT (X: 10200 - 12000)
     // =========================================================================
-    this.drawGate(9100, 'LEVEL 4', '#8b5cf6', groundY)
-    this.drawProjectShowcase(9700, {
+    this.drawGate(10200, 'LEVEL 4', '#8b5cf6', groundY)
+    this.drawProjectShowcase(10800, {
       tag: 'FLUTTER ANDROID APPLICATION',
       title: 'TRAVEL PLANNER',
       subtitle: 'Android Mobile App (55.37 MB APK)',
@@ -502,7 +502,7 @@ export class ScrollEngine {
     })
 
     // Final Victory & Contact Cloud Form
-    this.drawVictoryCastle(11000)
+    this.drawVictoryCastle(12100)
   }
 
   drawGate(startX, text, color, groundY) {
@@ -551,66 +551,170 @@ export class ScrollEngine {
   // Exact Robby Leonardi Vertical Skill Plant Measurement Stalks
   drawSkillPlants(startX, groundY) {
     const screenX = startX - this.cameraX
-    if (screenX < -700 || screenX > this.width + 700) return
-    const gY = groundY || this.height * 0.82
+    if (screenX < -1000 || screenX > this.width + 1000) return
+    const gY = groundY || this.height * 0.8
 
     this.ctx.save()
-    // 5 Measurement Horizontal Reference Lines (EXPERT down to BEGINNER)
-    const levels = ['EXPERT', 'ADVANCED', 'INTERMEDIATE', 'ELEMENTARY', 'BEGINNER']
-    levels.forEach((lvl, idx) => {
-      const lineY = gY - 220 + idx * 40
-      this.ctx.fillStyle = '#64748b'
-      this.ctx.font = 'bold 9px monospace'
-      this.ctx.textAlign = 'left'
-      this.ctx.fillText(lvl, screenX - 60, lineY + 3)
 
-      this.ctx.strokeStyle = 'rgba(100, 116, 139, 0.25)'
-      this.ctx.setLineDash([4, 4])
-      this.ctx.lineWidth = 1
+    // 5 Measurement Horizontal Reference Lines (EXPERT down to BEGINNER)
+    const yLevels = [
+      { lvl: 'EXPERT', y: gY - 368 },
+      { lvl: 'ADVANCED', y: gY - 296 },
+      { lvl: 'INTERMEDIATE', y: gY - 224 },
+      { lvl: 'ELEMENTARY', y: gY - 152 },
+      { lvl: 'BEGINNER', y: gY - 80 },
+    ]
+
+    const yExpert = yLevels[0].y
+
+    // Cloud Right behind Plant 3 & 4 flower heads
+    this.ctx.beginPath()
+    this.ctx.arc(screenX + 660, yLevels[1].y - 35, 44, 0, Math.PI * 2)
+    this.ctx.arc(screenX + 710, yLevels[1].y - 62, 58, 0, Math.PI * 2)
+    this.ctx.arc(screenX + 765, yLevels[1].y - 35, 42, 0, Math.PI * 2)
+    this.ctx.fill()
+
+    // 2. Top Red Folded Ribbon ("Multidisciplinary Designer" / "Full Stack Developer")
+    const ribbonCX = screenX + 510
+    const ribbonCY = yExpert - 160
+    const ribbonW = 520
+    const ribbonH = 56
+
+    // Ribbon Tails
+    this.ctx.fillStyle = '#b91c1c'
+    // Left Tail
+    this.ctx.beginPath()
+    this.ctx.moveTo(ribbonCX - ribbonW / 2 - 32, ribbonCY - ribbonH / 2 + 10)
+    this.ctx.lineTo(ribbonCX - ribbonW / 2 + 8, ribbonCY - ribbonH / 2 - 6)
+    this.ctx.lineTo(ribbonCX - ribbonW / 2 + 8, ribbonCY + ribbonH / 2 + 10)
+    this.ctx.lineTo(ribbonCX - ribbonW / 2 - 32, ribbonCY + ribbonH / 2 + 6)
+    this.ctx.lineTo(ribbonCX - ribbonW / 2 - 14, ribbonCY + 6)
+    this.ctx.closePath()
+    this.ctx.fill()
+
+    // Right Tail
+    this.ctx.beginPath()
+    this.ctx.moveTo(ribbonCX + ribbonW / 2 + 32, ribbonCY - ribbonH / 2 + 10)
+    this.ctx.lineTo(ribbonCX + ribbonW / 2 - 8, ribbonCY - ribbonH / 2 - 6)
+    this.ctx.lineTo(ribbonCX + ribbonW / 2 - 8, ribbonCY + ribbonH / 2 + 10)
+    this.ctx.lineTo(ribbonCX + ribbonW / 2 + 32, ribbonCY + ribbonH / 2 + 6)
+    this.ctx.lineTo(ribbonCX + ribbonW / 2 + 14, ribbonCY + 6)
+    this.ctx.closePath()
+    this.ctx.fill()
+
+    // Main Red Ribbon Body
+    this.ctx.fillStyle = '#e52521'
+    this.ctx.beginPath()
+    this.ctx.roundRect(ribbonCX - ribbonW / 2, ribbonCY - ribbonH / 2, ribbonW, ribbonH, 6)
+    this.ctx.fill()
+
+    // Ribbon Text
+    this.ctx.fillStyle = '#ffffff'
+    this.ctx.font = 'italic 900 32px "Fredoka", "Nunito", cursive, sans-serif'
+    this.ctx.textAlign = 'center'
+    this.ctx.textBaseline = 'middle'
+    this.ctx.fillText('Full Stack Developer', ribbonCX, ribbonCY + 2)
+
+    // 3. Solid White Measurement Reference Lines & Labels
+    yLevels.forEach(({ lvl, y }) => {
+      // White bold level text
+      this.ctx.fillStyle = '#ffffff'
+      this.ctx.font = '900 20px "Fredoka", "Arial Rounded MT Bold", "Nunito", sans-serif'
+      this.ctx.textAlign = 'left'
+      this.ctx.textBaseline = 'bottom'
+      this.ctx.fillText(lvl, screenX + 40, y - 5)
+
+      // Solid crisp white line spanning across all plants
+      this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.90)'
+      this.ctx.lineWidth = 2.2
       this.ctx.beginPath()
-      this.ctx.moveTo(screenX + 20, lineY)
-      this.ctx.lineTo(screenX + 480, lineY)
+      this.ctx.moveTo(screenX + 40, y)
+      this.ctx.lineTo(screenX + 900, y)
       this.ctx.stroke()
     })
-    this.ctx.setLineDash([])
 
-    // 4 Growing Skill Plants (React, Node.js, WebRTC, PostgreSQL)
+    // 4. Four Skill Plant Columns
     const skills = [
-      { name: 'REACT / VITE', height: 210, color: '#38bdf8' },
-      { name: 'NODE.JS API', height: 185, color: '#22c55e' },
-      { name: 'WEBRTC REALTIME', height: 175, color: '#e52d27' },
-      { name: 'POSTGRESQL', height: 160, color: '#f59e0b' },
+      { category: 'DESIGN / UI', name: 'REACT / VITE', leafCount: 4, headTier: 0 },
+      { category: 'BACKEND', name: 'NODE.JS API', leafCount: 4, headTier: 0 },
+      { category: 'REAL-TIME', name: 'WEBRTC P2P', leafCount: 3, headTier: 1 },
+      { category: 'DATABASE', name: 'POSTGRESQL', leafCount: 3, headTier: 1 },
     ]
 
     skills.forEach((s, idx) => {
-      const plantX = screenX + 70 + idx * 105
-      const growthAnim = Math.min(1, Math.max(0, (this.cameraX - (startX - 500)) / 400))
-      const currHeight = s.height * growthAnim
+      const plantX = screenX + 290 + idx * 170
+      const headCenterY = yLevels[s.headTier].y
 
-      // Plant Stalk (Stem)
-      this.ctx.fillStyle = '#16a34a'
-      this.ctx.fillRect(plantX - 4, groundY - currHeight, 8, currHeight)
+      // (a) Top Orange Zigzag Skill Badge
+      const badgeW = 142
+      const badgeH = 38
+      const badgeY = yExpert - 44
+      const bx = plantX - badgeW / 2
+      const by = badgeY - badgeH / 2
 
-      // Plant Head using User's plantSkillImg asset
-      if (plantSkillImg.complete && plantSkillImg.naturalWidth > 0) {
-        const pW = 38
-        const pH = pW * (plantSkillImg.naturalHeight / plantSkillImg.naturalWidth)
-        this.ctx.drawImage(plantSkillImg, plantX - pW / 2, groundY - currHeight - pH + 8, pW, pH)
-      } else {
-        // Fallback bulb
-        this.ctx.fillStyle = s.color
-        this.ctx.beginPath()
-        this.ctx.arc(plantX, groundY - currHeight - 12, 14, 0, Math.PI * 2)
-        this.ctx.fill()
-      }
+      this.ctx.fillStyle = '#f58220'
+      this.ctx.beginPath()
+      this.ctx.moveTo(bx, by)
+      this.ctx.lineTo(bx + badgeW, by)
+      // Right zigzag
+      this.ctx.lineTo(bx + badgeW - 6, by + badgeH * 0.25)
+      this.ctx.lineTo(bx + badgeW, by + badgeH * 0.5)
+      this.ctx.lineTo(bx + badgeW - 6, by + badgeH * 0.75)
+      this.ctx.lineTo(bx + badgeW, by + badgeH)
+      // Bottom
+      this.ctx.lineTo(bx, by + badgeH)
+      // Left zigzag
+      this.ctx.lineTo(bx + 6, by + badgeH * 0.75)
+      this.ctx.lineTo(bx, by + badgeH * 0.5)
+      this.ctx.lineTo(bx + 6, by + badgeH * 0.25)
+      this.ctx.closePath()
+      this.ctx.fill()
 
-      // Skill Ribbon Banner below
-      this.ctx.fillStyle = '#dc2626'
-      this.ctx.fillRect(plantX - 45, groundY + 30, 90, 22)
       this.ctx.fillStyle = '#ffffff'
-      this.ctx.font = 'bold 8px monospace'
+      this.ctx.font = '900 20px "Fredoka", "Arial Rounded MT Bold", "Nunito", sans-serif'
       this.ctx.textAlign = 'center'
-      this.ctx.fillText(s.name, plantX, groundY + 44)
+      this.ctx.textBaseline = 'middle'
+      this.ctx.fillText(s.category, plantX, badgeY + 1)
+
+      // Direct Plant Image from src/assets/plant-skill.png (160x250)
+      if (plantSkillImg.complete && plantSkillImg.naturalWidth > 0) {
+        const imgW = plantSkillImg.naturalWidth || 160
+        const imgH = plantSkillImg.naturalHeight || 250
+        const plantW = 160
+        const plantH = 250
+
+        if (s.leafCount === 4) {
+          const plantY = yLevels[0].y - 8
+
+          // 1. Continuous Brown stalk from flower head base all the way down to ground
+          this.ctx.fillStyle = '#8d5b2d'
+          this.ctx.fillRect(plantX - 3, plantY + 40, 6, Math.max(0, gY - (plantY + 40)))
+
+          // 2. Full 4-leaf plant drawn directly over the stalk
+          this.ctx.drawImage(plantSkillImg, plantX - plantW / 2, plantY, plantW, plantH)
+        } else {
+          const plantY = yLevels[1].y - 8
+          const headH = 100
+          const leavesH = 112.5
+
+          // 1. Continuous Brown stalk from flower head base all the way down to ground
+          this.ctx.fillStyle = '#8d5b2d'
+          this.ctx.fillRect(plantX - 3, plantY + 40, 6, Math.max(0, gY - (plantY + 40)))
+
+          // 2. Head (top 40% of image)
+          this.ctx.drawImage(
+            plantSkillImg,
+            0, 0, imgW, imgH * 0.40,
+            plantX - plantW / 2, plantY, plantW, headH
+          )
+          // 3. 3 Leaves (bottom 45% of image)
+          this.ctx.drawImage(
+            plantSkillImg,
+            0, imgH * 0.55, imgW, imgH * 0.45,
+            plantX - plantW / 2, plantY + headH, plantW, leavesH
+          )
+        }
+      }
     })
 
     this.ctx.restore()
