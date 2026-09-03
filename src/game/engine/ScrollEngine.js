@@ -648,7 +648,7 @@ export class ScrollEngine {
       // (a) Top Orange Zigzag Skill Badge
       const badgeW = 142
       const badgeH = 38
-      const badgeY = yExpert - 44
+      const badgeY = yExpert - 65
       const bx = plantX - badgeW / 2
       const by = badgeY - badgeH / 2
 
