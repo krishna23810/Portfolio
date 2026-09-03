@@ -5,6 +5,8 @@ import { drawRobbyCharacter } from '../entities/RobbyCharacter'
 import plantSkillSrc from '../../assets/plant-skill.png'
 import gateSrc from '../../assets/gate.png'
 import grassEdgeSrc from '../../assets/grass-edge.png'
+import titleAboutSrc from '../../assets/title-about.png'
+import treeBushSrc from '../../assets/tree-bush.png'
 
 const plantSkillImg = new Image()
 plantSkillImg.src = plantSkillSrc
@@ -14,6 +16,12 @@ gateImg.src = gateSrc
 
 const grassEdgeImg = new Image()
 grassEdgeImg.src = grassEdgeSrc
+
+const titleAboutImg = new Image()
+titleAboutImg.src = titleAboutSrc
+
+const treeBushImg = new Image()
+treeBushImg.src = treeBushSrc
 
 export class ScrollEngine {
   constructor(canvas, callbacks = {}) {
@@ -346,6 +354,18 @@ export class ScrollEngine {
     const titleCenterX = this.width * 0.5 - this.cameraX
 
     // =========================================================================
+    // 0. BACKGROUND 3D STRUCTURES (Behind grass & ground layer)
+    // =========================================================================
+    // 3D "ABOUT" Graphic (tucked behind gate & grass lawn)
+    if (titleAboutImg.complete && titleAboutImg.naturalWidth > 0) {
+      const aboutW = 860
+      const aboutH = aboutW * (titleAboutImg.naturalHeight / titleAboutImg.naturalWidth)
+      const aboutX = 2300 + 130 - this.cameraX
+      const aboutY = groundY - aboutH * 0.90
+      this.ctx.drawImage(titleAboutImg, aboutX, aboutY, aboutW, aboutH)
+    }
+
+    // =========================================================================
     // 1. GROUND WITH TRIPLE CHEVRON TEXTURED EARTH SOIL (BOTTOM 20%)
     // =========================================================================
     this.ctx.save()
@@ -413,10 +433,21 @@ export class ScrollEngine {
     }
 
     // =========================================================================
-    // LEVEL 1: ROBBY LEONARDI SKILL PLANTS & MEASUREMENT BARS (X: 2300 - 3200)
+    // LEVEL 1: ROBBY LEONARDI 3D ABOUT TITLE, GATE & SKILL PLANTS
     // =========================================================================
+    // 1. LEVEL 1 Gate (in front of ABOUT shadow, on grass)
     this.drawGate(2300, 'LEVEL 1', '#e52d27', groundY)
-    this.drawSkillPlants(2700, groundY)
+
+    // 2. Round green bushes overlapping base of ABOUT shadow (on grass)
+    if (treeBushImg.complete && treeBushImg.naturalWidth > 0) {
+      const bushW = 125
+      const bushH = bushW * (treeBushImg.naturalHeight / treeBushImg.naturalWidth)
+      this.ctx.drawImage(treeBushImg, 2300 + 640 - this.cameraX, groundY - bushH, bushW, bushH)
+      this.ctx.drawImage(treeBushImg, 2300 + 740 - this.cameraX, groundY - bushH * 1.1, bushW * 1.1, bushH * 1.1)
+    }
+
+    // 3. Robby Leonardi Skill Plants
+    this.drawSkillPlants(3250, groundY)
 
     // =========================================================================
     // LEVEL 2: DEEP SEA SUBMARINE DIVE - WEBRTC & LOOTLO (X: 3200 - 5600)

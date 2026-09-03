@@ -1,6 +1,6 @@
 // Level & Biome Data for the Mario & Dive Adventure (Robby Leonardi style)
 
-export const WORLD_LENGTH = 11000
+export const WORLD_LENGTH = 12500
 export const GROUND_Y = 480
 
 export const BIOMES = [
@@ -10,7 +10,7 @@ export const BIOMES = [
     subtitle: "Academics & Core Skills",
     type: "overworld", // Grassland & Pipes
     startX: 0,
-    endX: 2500,
+    endX: 4200,
     skyTop: "#4aa3df",
     skyBottom: "#87cefa",
     groundGrass: "#38b000",
@@ -22,8 +22,8 @@ export const BIOMES = [
     name: "WORLD 1-2: DEEP SEA SUBMARINE DIVE",
     subtitle: "Ghost Call WebRTC & Real-Time Ocean",
     type: "underwater", // Submarine & Corals
-    startX: 2500,
-    endX: 5000,
+    startX: 4200,
+    endX: 6800,
     skyTop: "#031d38",
     skyBottom: "#0b4f6c",
     groundGrass: "#028090",
@@ -35,8 +35,8 @@ export const BIOMES = [
     name: "WORLD 1-3: INDUSTRIAL FACTORY & CITY",
     subtitle: "TRISX Technologies & Subcidys SaaS Engine",
     type: "factory", // Sunset & Gears
-    startX: 5000,
-    endX: 7400,
+    startX: 6800,
+    endX: 8800,
     skyTop: "#3a1c71",
     skyBottom: "#ffaf7b",
     groundGrass: "#d97706",
@@ -48,8 +48,8 @@ export const BIOMES = [
     name: "WORLD 1-4: CLOUD FLIGHT KINGDOM",
     subtitle: "Travel Planner Flutter APK & Airship",
     type: "skyflight", // Cloud Islands & Airplane
-    startX: 7400,
-    endX: 9300,
+    startX: 8800,
+    endX: 10600,
     skyTop: "#312e81",
     skyBottom: "#c084fc",
     groundGrass: "#ec4899",
@@ -61,8 +61,8 @@ export const BIOMES = [
     name: "WORLD 1-5: VICTORY CASTLE & FLAGPOLE",
     subtitle: "Final Flagpole & Hire Terminal",
     type: "castle", // Castle & Flagpole
-    startX: 9300,
-    endX: 11000,
+    startX: 10600,
+    endX: 12500,
     skyTop: "#111827",
     skyBottom: "#374151",
     groundGrass: "#475569",
