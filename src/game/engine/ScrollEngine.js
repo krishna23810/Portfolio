@@ -62,6 +62,11 @@ export class ScrollEngine {
     this.characterVelocityY = 0
     this.hasLanded = false
 
+    // One-time Skill Plant Growth Animation
+    this.plantGrowths = [0, 0, 0, 0]
+    this.plantGrowthTriggered = false
+    this.plantAnimTimer = 0
+
     // Entities
     this.bg = new ParallaxBackground()
 
@@ -178,6 +183,20 @@ export class ScrollEngine {
     const delta = this.scrollProgress - prevProgress
     const speed = Math.abs(delta)
     this.isMoving = speed > 0.00005
+
+    // One-time Skill Plant Growth Trigger when entering Level 1 skills
+    if (this.cameraX >= 2650) {
+      this.plantGrowthTriggered = true
+    }
+    if (this.plantGrowthTriggered) {
+      this.plantAnimTimer += 1
+      for (let i = 0; i < 4; i++) {
+        const delay = i * 8 // 8 frames staggered delay per plant
+        if (this.plantAnimTimer >= delay && this.plantGrowths[i] < 1) {
+          this.plantGrowths[i] = Math.min(1, this.plantGrowths[i] + 0.028)
+        }
+      }
+    }
 
     if (delta > 0.00005) {
       this.facing = 'right'
@@ -649,7 +668,7 @@ export class ScrollEngine {
       // (a) Top Orange Zigzag Skill Badge
       const badgeW = 142
       const badgeH = 38
-      const badgeY = yExpert - 65
+      const badgeY = yExpert - 78
       const bx = plantX - badgeW / 2
       const by = badgeY - badgeH / 2
 
@@ -677,44 +696,54 @@ export class ScrollEngine {
       this.ctx.textBaseline = 'middle'
       this.ctx.fillText(s.category, plantX, badgeY + 1)
 
-      // Direct Plant Image from src/assets/plant-skill.png (160x250)
-      if (plantSkillImg.complete && plantSkillImg.naturalWidth > 0) {
+      // One-Time Staggered Growth Progress (Grows once and stays grown)
+      const progress = this.plantGrowths[idx] || 0
+      // Smooth organic cubic easing
+      const easeGrowth = progress === 0 ? 0 : 1 - Math.pow(1 - progress, 3)
+
+      // Only render plant if it has started growing out of the ground
+      if (easeGrowth > 0 && plantSkillImg.complete && plantSkillImg.naturalWidth > 0) {
         const imgW = plantSkillImg.naturalWidth || 160
         const imgH = plantSkillImg.naturalHeight || 250
-        const plantW = 160
-        const plantH = 250
+        const plantW = 175
+        const plantH = 275
+
+        // Target fully grown top position
+        const targetTopY = (s.leafCount === 4 ? yLevels[0].y : yLevels[1].y) - 48
+        const totalTravel = gY - targetTopY
+        // Current animated top position of the plant
+        const currentPlantTopY = gY - totalTravel * easeGrowth
+
+        // 1. Continuous Brown stalk from head base down to ground
+        this.ctx.fillStyle = '#8d5b2d'
+        this.ctx.fillRect(plantX - 3, currentPlantTopY + 45, 6, Math.max(0, gY - (currentPlantTopY + 45)))
+
+        // 2. Plant Head & Leaves (Clipped at ground level so plant emerges from lawn)
+        this.ctx.save()
+        this.ctx.beginPath()
+        this.ctx.rect(plantX - plantW, 0, plantW * 2, gY)
+        this.ctx.clip()
 
         if (s.leafCount === 4) {
-          const plantY = yLevels[0].y - 8
-
-          // 1. Continuous Brown stalk from flower head base all the way down to ground
-          this.ctx.fillStyle = '#8d5b2d'
-          this.ctx.fillRect(plantX - 3, plantY + 40, 6, Math.max(0, gY - (plantY + 40)))
-
-          // 2. Full 4-leaf plant drawn directly over the stalk
-          this.ctx.drawImage(plantSkillImg, plantX - plantW / 2, plantY, plantW, plantH)
+          // Full 4-leaf plant rising up
+          this.ctx.drawImage(plantSkillImg, plantX - plantW / 2, currentPlantTopY, plantW, plantH)
         } else {
-          const plantY = yLevels[1].y - 8
-          const headH = 100
-          const leavesH = 112.5
+          // 3-leaf plant rising up
+          const headH = 110
+          const leavesH = 124
 
-          // 1. Continuous Brown stalk from flower head base all the way down to ground
-          this.ctx.fillStyle = '#8d5b2d'
-          this.ctx.fillRect(plantX - 3, plantY + 40, 6, Math.max(0, gY - (plantY + 40)))
-
-          // 2. Head (top 40% of image)
           this.ctx.drawImage(
             plantSkillImg,
             0, 0, imgW, imgH * 0.40,
-            plantX - plantW / 2, plantY, plantW, headH
+            plantX - plantW / 2, currentPlantTopY, plantW, headH
           )
-          // 3. 3 Leaves (bottom 45% of image)
           this.ctx.drawImage(
             plantSkillImg,
             0, imgH * 0.55, imgW, imgH * 0.45,
-            plantX - plantW / 2, plantY + headH, plantW, leavesH
+            plantX - plantW / 2, currentPlantTopY + headH, plantW, leavesH
           )
         }
+        this.ctx.restore()
       }
     })
 
