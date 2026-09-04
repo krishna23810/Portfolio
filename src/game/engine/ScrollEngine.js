@@ -635,10 +635,11 @@ export class ScrollEngine {
 
     // 4. Four Skill Plant Columns
     const skills = [
-      { category: 'DESIGN / UI', name: 'REACT / VITE', leafCount: 4, headTier: 0 },
       { category: 'BACKEND', name: 'NODE.JS API', leafCount: 4, headTier: 0 },
-      { category: 'REAL-TIME', name: 'WEBRTC P2P', leafCount: 3, headTier: 1 },
-      { category: 'DATABASE', name: 'POSTGRESQL', leafCount: 3, headTier: 1 },
+      // { category: 'EVENT-DRIVEN', name: 'WEBRTC P2P', leafCount: 4, headTier: 0 },
+      { category: 'DATABASE', name: 'POSTGRESQL', leafCount: 4, headTier: 0 },
+      { category: 'DESIGN / UI', name: 'REACT / VITE', leafCount: 4, headTier: 0 },
+      { category: 'FLUTTER', name: 'FLUTTER APK', leafCount: 3, headTier: 0 },
     ]
 
     skills.forEach((s, idx) => {
