@@ -249,72 +249,65 @@ export class ScrollEngine {
     const platH = 120
 
     const isScrollingLeft = delta < -0.00005
-
-    // Check clear boundaries outside the platform
-    if (charWorldX < platX - 130 && !this.isAutoJumpingUp && !this.isAutoJumpingDown) {
-      this.hasJumpedUp = false
-      this.hasJumpedDown = false
-      this.charElevationY = 0
-      this.isJumping = false
-    } else if (charWorldX > platX + platW + 130 && !this.isAutoJumpingUp && !this.isAutoJumpingDown) {
-      this.hasJumpedUp = true
-      this.hasJumpedDown = true
-      this.charElevationY = 0
-      this.isJumping = false
-    }
+    const isScrollingRight = delta > 0.00005
 
     // --- FORWARD MOTION (Moving Right) ---
-    if (!isScrollingLeft) {
+    if (isScrollingRight && !this.isAutoJumpingUp && !this.isAutoJumpingDown) {
       // 1. Forward Jump-Up onto platform from left lawn
-      if (charWorldX >= platX - 45 && !this.hasJumpedUp && !this.isAutoJumpingUp && !this.isAutoJumpingDown) {
+      if (charWorldX >= platX - 55 && charWorldX < platX + 40 && !this.hasJumpedUp) {
         this.isAutoJumpingUp = true
         this.hasJumpedUp = true
         this.jumpAnimProgress = 0
         this.jumpDirection = 'right'
+        this.jumpStartX = this.scrollProgress
+        this.jumpTargetX = (platX + 70 - this.width * 0.5) / WORLD_LENGTH
       }
 
       // 2. Forward Jump-Down off platform right ledge to right lawn
-      if (this.hasJumpedUp && !this.hasJumpedDown && charWorldX >= platX + platW + 27 && !this.isAutoJumpingUp && !this.isAutoJumpingDown) {
+      if (charWorldX >= platX + platW - 20 && this.hasJumpedUp && !this.hasJumpedDown) {
         this.isAutoJumpingDown = true
         this.hasJumpedDown = true
         this.jumpAnimProgress = 0
         this.jumpDirection = 'right'
+        this.jumpStartX = this.scrollProgress
+        this.jumpTargetX = (platX + platW + 80 - this.width * 0.5) / WORLD_LENGTH
       }
     }
     // --- BACKWARD MOTION (Moving Left) ---
-    else {
+    else if (isScrollingLeft && !this.isAutoJumpingUp && !this.isAutoJumpingDown) {
       // 1. Backward Jump-Up onto platform from right lawn
-      if (charWorldX <= platX + platW + 65 && this.hasJumpedDown && !this.isAutoJumpingUp && !this.isAutoJumpingDown) {
+      if (charWorldX <= platX + platW + 55 && charWorldX > platX + platW - 40 && this.hasJumpedDown) {
         this.isAutoJumpingUp = true
         this.hasJumpedDown = false
         this.jumpAnimProgress = 0
         this.jumpDirection = 'left'
+        this.jumpStartX = this.scrollProgress
+        this.jumpTargetX = (platX + platW - 70 - this.width * 0.5) / WORLD_LENGTH
       }
 
       // 2. Backward Jump-Down off platform left ledge to left lawn
-      if (this.hasJumpedUp && charWorldX <= platX + 20 && !this.isAutoJumpingUp && !this.isAutoJumpingDown) {
+      if (charWorldX <= platX + 20 && this.hasJumpedUp && !this.hasJumpedDown) {
         this.isAutoJumpingDown = true
         this.hasJumpedUp = false
         this.jumpAnimProgress = 0
         this.jumpDirection = 'left'
+        this.jumpStartX = this.scrollProgress
+        this.jumpTargetX = (platX - 70 - this.width * 0.5) / WORLD_LENGTH
       }
     }
 
-    // --- ANIMATE ACTIVE JUMPS ---
+    // --- ANIMATE ACTIVE JUMPS (Target Interpolated) ---
     if (this.isAutoJumpingUp) {
       this.jumpAnimProgress += 0.045
       this.isJumping = true
 
-      // Propel smoothly onto the platform
-      const moveSign = this.jumpDirection === 'left' ? -1 : 1
-      const forwardDelta = moveSign * (20 / WORLD_LENGTH) * 0.045
-      this.scrollProgress += forwardDelta
+      const p = Math.min(1, this.jumpAnimProgress)
+      this.scrollProgress = this.jumpStartX + (this.jumpTargetX - this.jumpStartX) * p
       this.targetScrollProgress = this.scrollProgress
       this.worldX = this.scrollProgress * WORLD_LENGTH
       this.cameraX = this.worldX
 
-      const p = Math.min(1, this.jumpAnimProgress)
-      const arc = Math.sin(p * Math.PI) * 200 // Increased jump arc height
+      const arc = Math.sin(p * Math.PI) * 140
       this.charElevationY = platH * p + arc
 
       if (this.jumpAnimProgress >= 1) {
@@ -326,16 +319,13 @@ export class ScrollEngine {
       this.jumpAnimProgress += 0.045
       this.isJumping = true
 
-      // Propel smoothly clear of the platform step edge
-      const moveSign = this.jumpDirection === 'left' ? -1 : 1
-      const forwardDelta = moveSign * (120 / WORLD_LENGTH) * 0.045
-      this.scrollProgress += forwardDelta
+      const p = Math.min(1, this.jumpAnimProgress)
+      this.scrollProgress = this.jumpStartX + (this.jumpTargetX - this.jumpStartX) * p
       this.targetScrollProgress = this.scrollProgress
       this.worldX = this.scrollProgress * WORLD_LENGTH
       this.cameraX = this.worldX
 
-      const p = Math.min(1, this.jumpAnimProgress)
-      const arc = Math.sin(p * Math.PI) * 35
+      const arc = Math.sin(p * Math.PI) * 60
       this.charElevationY = platH * (1 - p) + arc
 
       if (this.jumpAnimProgress >= 1) {
@@ -343,12 +333,23 @@ export class ScrollEngine {
         this.charElevationY = 0
         this.isJumping = false
       }
-    } else if (this.hasJumpedUp && !this.hasJumpedDown) {
-      // Solidly on the platform
-      if (charWorldX >= platX - 10 && charWorldX <= platX + platW + 10) {
+    } else {
+      // --- PHYSICAL TERRAIN ELEVATION (Never floats in mid-air when scrolling slow/stopped!) ---
+      if (charWorldX >= platX && charWorldX <= platX + platW) {
         this.charElevationY = platH
-        this.isJumping = false
+        this.hasJumpedUp = true
+        this.hasJumpedDown = false
+      } else {
+        this.charElevationY = 0
+        if (charWorldX < platX) {
+          this.hasJumpedUp = false
+          this.hasJumpedDown = false
+        } else {
+          this.hasJumpedUp = true
+          this.hasJumpedDown = true
+        }
       }
+      this.isJumping = false
     }
 
     // Mode transitions
@@ -516,29 +517,6 @@ export class ScrollEngine {
     // 0. BACKGROUND 3D STRUCTURES & TREES (Behind grass & ground layer)
     // =========================================================================
     const aboutBaseX = 2300 + 130 - this.cameraX
-
-    // 0a. Tall pill trees & dark green tree dome rising behind ABOUT
-    // if (treePillImg.complete && treePillImg.naturalWidth > 0) {
-    //   // Left pill tree behind "A" in ABOUT
-    //   const leftPillW = 155
-    //   const leftPillH = leftPillW * (treePillImg.naturalHeight / treePillImg.naturalWidth) * 0.95
-    //   this.ctx.drawImage(treePillImg, aboutBaseX + 50, groundY - leftPillH, leftPillW, leftPillH)
-
-    //   // Right tall pill tree behind right slope of ABOUT
-    //   const pillW = 165
-    //   const pillH = pillW * (treePillImg.naturalHeight / treePillImg.naturalWidth) * 0.95
-    //   const pillX = aboutBaseX + 640
-    //   const pillY = groundY - pillH
-    //   this.ctx.drawImage(treePillImg, pillX, pillY, pillW, pillH)
-    // }
-
-    // if (treeDarkImg.complete && treeDarkImg.naturalWidth > 0) {
-    //   const darkW = 230
-    //   const darkH = darkW * (treeDarkImg.naturalHeight / treeDarkImg.naturalWidth)
-    //   const darkX = aboutBaseX + 530
-    //   const darkY = groundY - darkH * 0.95
-    //   this.ctx.drawImage(treeDarkImg, darkX, darkY, darkW, darkH)
-    // }
 
     if (treePillImg.complete && treePillImg.naturalWidth > 0) {
       const transPillW = 200
