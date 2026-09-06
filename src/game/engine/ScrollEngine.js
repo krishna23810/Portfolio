@@ -244,7 +244,7 @@ export class ScrollEngine {
     // BIDIRECTIONAL AUTONOMOUS JUMP PLATFORM SYSTEM (Forward & Backward)
     // =========================================================================
     const charWorldX = this.worldX + this.width * 0.5
-    const platX = 4650
+    const platX = 4640
     const platW = 420
     const platH = 120
 
