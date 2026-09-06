@@ -195,7 +195,7 @@ export class ParallaxBackground {
 
     // Mountain 2 (Smaller distant mountain)
     const mtn2X = width * 0.5 + 2000 + mtnParallaxX
-    const mtn2W = 520
+    const mtn2W = 800
     const mtn2H = mtn2W * (mountainImg.naturalHeight / mountainImg.naturalWidth)
     ctx.drawImage(mountainImg, mtn2X, groundY - mtn2H, mtn2W, mtn2H)
 

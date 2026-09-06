@@ -32,7 +32,8 @@ export function drawRobbyCharacter(
   bounceY = 0,
   isMoving = false,
   stridePhase = 0,
-  isFlying = false
+  isFlying = false,
+  isJumping = false
 ) {
   if (!spriteSheet.complete || spriteSheet.naturalWidth === 0) return
 
@@ -43,6 +44,8 @@ export function drawRobbyCharacter(
   let frameIdx = IDLE_FRAME
   if (isFlying) {
     frameIdx = FLY_FRAME
+  } else if (isJumping) {
+    frameIdx = 8 // Robby Leonardi jumping frame: arms out, legs split/kick
   } else if (isMoving) {
     const cycle = ((stridePhase % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2)
     const walkIdx = Math.floor((cycle / (Math.PI * 2)) * WALK_CYCLE.length) % WALK_CYCLE.length

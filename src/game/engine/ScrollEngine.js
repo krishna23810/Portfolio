@@ -5,6 +5,7 @@ import { drawRobbyCharacter } from '../entities/RobbyCharacter'
 import plantSkillSrc from '../../assets/plant-skill.png'
 import gateSrc from '../../assets/gate.png'
 import grassEdgeSrc from '../../assets/grass-edge.png'
+import groundSrc from '../../assets/ground.png'
 import titleAboutSrc from '../../assets/title-about.png'
 import treeBushSrc from '../../assets/tree-bush.png'
 import treeDarkSrc from '../../assets/tree-dark.png'
@@ -20,6 +21,9 @@ gateImg.src = gateSrc
 
 const grassEdgeImg = new Image()
 grassEdgeImg.src = grassEdgeSrc
+
+const groundImg = new Image()
+groundImg.src = groundSrc
 
 const titleAboutImg = new Image()
 titleAboutImg.src = titleAboutSrc
@@ -82,6 +86,15 @@ export class ScrollEngine {
     this.plantGrowths = [0, 0, 0, 0]
     this.plantGrowthTriggered = false
     this.plantAnimTimer = 0
+
+    // Robby Autonomous 1-Time Jump Animation
+    this.hasJumpedUp = false
+    this.hasJumpedDown = false
+    this.isAutoJumpingUp = false
+    this.isAutoJumpingDown = false
+    this.jumpAnimProgress = 0
+    this.charElevationY = 0
+    this.isJumping = false
 
     // Entities
     this.bg = new ParallaxBackground()
@@ -226,6 +239,117 @@ export class ScrollEngine {
 
     this.worldX = this.scrollProgress * WORLD_LENGTH
     this.cameraX = this.worldX
+
+    // =========================================================================
+    // BIDIRECTIONAL AUTONOMOUS JUMP PLATFORM SYSTEM (Forward & Backward)
+    // =========================================================================
+    const charWorldX = this.worldX + this.width * 0.5
+    const platX = 4650
+    const platW = 420
+    const platH = 120
+
+    const isScrollingLeft = delta < -0.00005
+
+    // Check clear boundaries outside the platform
+    if (charWorldX < platX - 90 && !this.isAutoJumpingUp && !this.isAutoJumpingDown) {
+      this.hasJumpedUp = false
+      this.hasJumpedDown = false
+      this.charElevationY = 0
+      this.isJumping = false
+    } else if (charWorldX > platX + platW + 80 && !this.isAutoJumpingUp && !this.isAutoJumpingDown) {
+      this.hasJumpedUp = true
+      this.hasJumpedDown = true
+      this.charElevationY = 0
+      this.isJumping = false
+    }
+
+    // --- FORWARD MOTION (Moving Right) ---
+    if (!isScrollingLeft) {
+      // 1. Forward Jump-Up onto platform
+      if (charWorldX >= platX - 55 && !this.hasJumpedUp && !this.isAutoJumpingUp && !this.isAutoJumpingDown) {
+        this.isAutoJumpingUp = true
+        this.hasJumpedUp = true
+        this.jumpAnimProgress = 0
+        this.jumpDirection = 'right'
+      }
+
+      // 2. Forward Jump-Down off platform right ledge
+      if (this.hasJumpedUp && !this.hasJumpedDown && charWorldX >= platX + platW - 30 && !this.isAutoJumpingUp && !this.isAutoJumpingDown) {
+        this.isAutoJumpingDown = true
+        this.hasJumpedDown = true
+        this.jumpAnimProgress = 0
+        this.jumpDirection = 'right'
+      }
+    }
+    // --- BACKWARD MOTION (Moving Left) ---
+    else {
+      // 1. Backward Jump-Up onto platform from right lawn
+      if (charWorldX <= platX + platW + 55 && this.hasJumpedDown && !this.isAutoJumpingUp && !this.isAutoJumpingDown) {
+        this.isAutoJumpingUp = true
+        this.hasJumpedDown = false
+        this.jumpAnimProgress = 0
+        this.jumpDirection = 'left'
+      }
+
+      // 2. Backward Jump-Down off platform left ledge onto left lawn
+      if (this.hasJumpedUp && charWorldX <= platX + 15 && !this.isAutoJumpingUp && !this.isAutoJumpingDown) {
+        this.isAutoJumpingDown = true
+        this.hasJumpedUp = false
+        this.jumpAnimProgress = 0
+        this.jumpDirection = 'left'
+      }
+    }
+
+    // --- ANIMATE ACTIVE JUMPS ---
+    if (this.isAutoJumpingUp) {
+      this.jumpAnimProgress += 0.042
+      this.isJumping = true
+
+      // Propel in the direction of the leap
+      const moveSign = this.jumpDirection === 'left' ? -1 : 1
+      const forwardDelta = moveSign * (70 / WORLD_LENGTH) * 0.042
+      this.scrollProgress += forwardDelta
+      this.targetScrollProgress = this.scrollProgress
+      this.worldX = this.scrollProgress * WORLD_LENGTH
+      this.cameraX = this.worldX
+
+      const p = Math.min(1, this.jumpAnimProgress)
+      const arc = Math.sin(p * Math.PI) * 160
+      this.charElevationY = platH * p + arc
+
+      if (this.jumpAnimProgress >= 1) {
+        this.isAutoJumpingUp = false
+        this.charElevationY = platH
+        this.isJumping = false
+      }
+    } else if (this.isAutoJumpingDown) {
+      this.jumpAnimProgress += 0.048
+      this.isJumping = true
+
+      // Propel in the direction of the descent
+      const moveSign = this.jumpDirection === 'left' ? -1 : 1
+      const forwardDelta = moveSign * (60 / WORLD_LENGTH) * 0.048
+      this.scrollProgress += forwardDelta
+      this.targetScrollProgress = this.scrollProgress
+      this.worldX = this.scrollProgress * WORLD_LENGTH
+      this.cameraX = this.worldX
+
+      const p = Math.min(1, this.jumpAnimProgress)
+      const arc = Math.sin(p * Math.PI) * 28
+      this.charElevationY = platH * (1 - p) + arc
+
+      if (this.jumpAnimProgress >= 1) {
+        this.isAutoJumpingDown = false
+        this.charElevationY = 0
+        this.isJumping = false
+      }
+    } else if (this.hasJumpedUp && !this.hasJumpedDown) {
+      // Solidly on the platform
+      if (charWorldX >= platX && charWorldX <= platX + platW) {
+        this.charElevationY = platH
+        this.isJumping = false
+      }
+    }
 
     // Mode transitions
     this.isSubmarine = this.worldX >= 5400 && this.worldX < 8200
@@ -434,14 +558,44 @@ export class ScrollEngine {
     }
 
     // =========================================================================
-    // 1. GROUND WITH TRIPLE CHEVRON TEXTURED EARTH SOIL (BOTTOM 20%)
+    // 1. GROUND WITH AUTHENTIC TEXTURED EARTH SOIL (BOTTOM 20%) & GRASS EDGE
     // =========================================================================
     this.ctx.save()
-    // Lawn & Soil Body (#795548)
-    this.ctx.fillStyle = '#795548'
-    this.ctx.fillRect(0, groundY + 3, this.width, this.height - groundY)
 
-    // Lawn Grass with grassEdgeImg asset
+    // 1a. Ground Soil Texture (ground.png)
+    if (groundImg.complete && groundImg.naturalWidth > 0) {
+      const gTileW = 181
+      const gTileH = 70
+      const startGX = -((this.cameraX) % gTileW)
+      for (let gx = startGX; gx < this.width + gTileW; gx += gTileW) {
+        for (let gy = groundY; gy < this.height + gTileH; gy += gTileH) {
+          this.ctx.drawImage(groundImg, gx, gy, gTileW, gTileH)
+        }
+      }
+    } else {
+      // Lawn & Soil Body fallback (#795548)
+      this.ctx.fillStyle = '#795548'
+      this.ctx.fillRect(0, groundY + 3, this.width, this.height - groundY)
+
+      // 2 Wavy Chevron Zig-Zag Soil Bands fallback
+      this.ctx.fillStyle = 'rgba(0, 0, 0, 0.15)'
+      for (let row = 0; row < 2; row++) {
+        const rowY = groundY + 56 + row * 40
+        for (let zx = -((this.cameraX) % 36); zx < this.width + 36; zx += 36) {
+          this.ctx.beginPath()
+          this.ctx.moveTo(zx, rowY)
+          this.ctx.lineTo(zx + 18, rowY + 16)
+          this.ctx.lineTo(zx + 36, rowY)
+          this.ctx.lineTo(zx + 36, rowY + 14)
+          this.ctx.lineTo(zx + 18, rowY + 30)
+          this.ctx.lineTo(zx, rowY + 14)
+          this.ctx.closePath()
+          this.ctx.fill()
+        }
+      }
+    }
+
+    // 1b. Lawn Grass Edge (grass-edge.png)
     if (grassEdgeImg.complete && grassEdgeImg.naturalWidth > 0) {
       const tileW = 100
       const tileH = tileW * (grassEdgeImg.naturalHeight / grassEdgeImg.naturalWidth)
@@ -461,23 +615,6 @@ export class ScrollEngine {
         this.ctx.moveTo(zx, groundY + 32)
         this.ctx.lineTo(zx + 18, groundY + 46)
         this.ctx.lineTo(zx + 36, groundY + 32)
-        this.ctx.closePath()
-        this.ctx.fill()
-      }
-    }
-
-    // 2 Wavy Chevron Zig-Zag Soil Bands
-    this.ctx.fillStyle = 'rgba(0, 0, 0, 0.15)'
-    for (let row = 0; row < 2; row++) {
-      const rowY = groundY + 56 + row * 40
-      for (let zx = -((this.cameraX) % 36); zx < this.width + 36; zx += 36) {
-        this.ctx.beginPath()
-        this.ctx.moveTo(zx, rowY)
-        this.ctx.lineTo(zx + 18, rowY + 16)
-        this.ctx.lineTo(zx + 36, rowY)
-        this.ctx.lineTo(zx + 36, rowY + 14)
-        this.ctx.lineTo(zx + 18, rowY + 30)
-        this.ctx.lineTo(zx, rowY + 14)
         this.ctx.closePath()
         this.ctx.fill()
       }
@@ -543,6 +680,9 @@ export class ScrollEngine {
 
     // 3. Robby Leonardi Skill Plants (spaced with breathing room after ABOUT)
     this.drawSkillPlants(3500, groundY)
+
+    // 4. Robby Leonardi Elevated Jump Platform Step & Mountain (X: 4650)
+    this.drawJumpPlatform(4650, groundY)
 
     // =========================================================================
     // LEVEL 2: DEEP SEA SUBMARINE DIVE - WEBRTC & LOOTLO (X: 5600 - 8200)
@@ -826,6 +966,91 @@ export class ScrollEngine {
     this.ctx.restore()
   }
 
+  // Exact Robby Leonardi 1:1 Elevated Jump Platform Step, Background Pyramid Mountain & Tree Row
+  drawJumpPlatform(startX, groundY) {
+    const screenX = startX - this.cameraX
+    if (screenX < -1200 || screenX > this.width + 1200) return
+
+    const platW = 420
+    const platH = 120
+    const platTopY = groundY - platH
+
+    this.ctx.save()
+
+    // Soil Body under the step with groundImg texture clipped within step
+    this.ctx.save()
+    this.ctx.beginPath()
+    this.ctx.rect(screenX, platTopY, platW, groundY - platTopY)
+    this.ctx.clip()
+
+    if (groundImg.complete && groundImg.naturalWidth > 0) {
+      const gTileW = 181
+      const gTileH = 70
+      const startGX = -((this.cameraX) % gTileW)
+      for (let gx = startGX - gTileW; gx < this.width + gTileW; gx += gTileW) {
+        for (let gy = platTopY; gy < groundY + gTileH; gy += gTileH) {
+          this.ctx.drawImage(groundImg, gx, gy, gTileW, gTileH)
+        }
+      }
+    } else {
+      this.ctx.fillStyle = '#795548'
+      this.ctx.fillRect(screenX, platTopY + 28, platW, groundY - (platTopY + 28))
+
+      // 3 Zig-zag chevron soil bands under platform
+      this.ctx.fillStyle = 'rgba(0, 0, 0, 0.15)'
+      for (let row = 0; row < 3; row++) {
+        const rowY = platTopY + 40 + row * 24
+        if (rowY + 14 < groundY) {
+          for (let zx = screenX; zx < screenX + platW; zx += 36) {
+            this.ctx.beginPath()
+            this.ctx.moveTo(zx, rowY)
+            this.ctx.lineTo(zx + 18, rowY + 10)
+            this.ctx.lineTo(zx + 36, rowY)
+            this.ctx.lineTo(zx + 36, rowY + 8)
+            this.ctx.lineTo(zx + 18, rowY + 18)
+            this.ctx.lineTo(zx, rowY + 8)
+            this.ctx.closePath()
+            this.ctx.fill()
+          }
+        }
+      }
+    }
+    this.ctx.restore()
+
+    // Top Lawn Grass of the Platform with grassEdgeImg asset
+    if (grassEdgeImg.complete && grassEdgeImg.naturalWidth > 0) {
+      const tileW = 100
+      const tileH = tileW * (grassEdgeImg.naturalHeight / grassEdgeImg.naturalWidth)
+      for (let gx = screenX; gx < screenX + platW; gx += tileW) {
+        const drawW = Math.min(tileW, screenX + platW - gx)
+        this.ctx.drawImage(
+          grassEdgeImg,
+          0, 0, (drawW / tileW) * grassEdgeImg.naturalWidth, grassEdgeImg.naturalHeight,
+          gx, platTopY, drawW, tileH
+        )
+      }
+    } else {
+      this.ctx.fillStyle = '#8bc34a'
+      this.ctx.fillRect(screenX, platTopY, platW, 28)
+
+      this.ctx.fillStyle = '#7cb342'
+      for (let zx = screenX; zx < screenX + platW; zx += 36) {
+        this.ctx.beginPath()
+        this.ctx.moveTo(zx, platTopY + 28)
+        this.ctx.lineTo(zx + 18, platTopY + 40)
+        this.ctx.lineTo(zx + 36, platTopY + 28)
+        this.ctx.closePath()
+        this.ctx.fill()
+      }
+    }
+
+    // Left vertical step edge shadow
+    this.ctx.fillStyle = 'rgba(0, 0, 0, 0.18)'
+    this.ctx.fillRect(screenX, platTopY, 6, groundY - platTopY)
+
+    this.ctx.restore()
+  }
+
   // Exact Robby Leonardi Experience Container with Animated Pie Chart
   drawExperienceSection(startX, exp) {
     const screenX = startX - this.cameraX
@@ -1048,7 +1273,7 @@ export class ScrollEngine {
     const screenX = this.width * 0.5
     const groundY = this.height * 0.80
 
-    let avatarY = groundY - 85
+    let avatarY = groundY - 85 - (this.charElevationY || 0)
     if (!this.hasLanded) {
       avatarY = this.characterDropY
     } else if (this.isSubmarine) {
@@ -1099,9 +1324,9 @@ export class ScrollEngine {
       this.ctx.fillRect(-2, -16, 4, 32)
       this.ctx.restore()
     } else {
-      const bounceY = (this.isMoving && this.hasLanded) ? Math.sin(this.stridePhase) * 3 : 0
+      const bounceY = (this.isMoving && this.hasLanded && !this.isJumping) ? Math.sin(this.stridePhase) * 3 : 0
       const isFlyingOrFalling = !this.hasLanded || this.isFlying
-      drawRobbyCharacter(this.ctx, bounceY, this.isMoving, this.stridePhase, isFlyingOrFalling)
+      drawRobbyCharacter(this.ctx, bounceY, this.isMoving, this.stridePhase, isFlyingOrFalling, this.isJumping)
     }
 
     this.ctx.restore()
