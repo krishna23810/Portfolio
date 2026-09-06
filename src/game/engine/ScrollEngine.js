@@ -78,7 +78,7 @@ export class ScrollEngine {
     this.loadingTimer = 0
     this.cameraY = canvas.height * 0.85 // Camera starts up in sky, hiding ground & title initially
     this.targetCameraY = canvas.height * 0.85
-    this.characterDropY = -250 // Starts high up in sky
+    this.characterDropY = -200 // Starts just above sky for smooth visible descent
     this.characterVelocityY = 0
     this.hasLanded = false
 
@@ -251,12 +251,12 @@ export class ScrollEngine {
     const isScrollingLeft = delta < -0.00005
 
     // Check clear boundaries outside the platform
-    if (charWorldX < platX - 90 && !this.isAutoJumpingUp && !this.isAutoJumpingDown) {
+    if (charWorldX < platX - 130 && !this.isAutoJumpingUp && !this.isAutoJumpingDown) {
       this.hasJumpedUp = false
       this.hasJumpedDown = false
       this.charElevationY = 0
       this.isJumping = false
-    } else if (charWorldX > platX + platW + 80 && !this.isAutoJumpingUp && !this.isAutoJumpingDown) {
+    } else if (charWorldX > platX + platW + 130 && !this.isAutoJumpingUp && !this.isAutoJumpingDown) {
       this.hasJumpedUp = true
       this.hasJumpedDown = true
       this.charElevationY = 0
@@ -265,16 +265,16 @@ export class ScrollEngine {
 
     // --- FORWARD MOTION (Moving Right) ---
     if (!isScrollingLeft) {
-      // 1. Forward Jump-Up onto platform
-      if (charWorldX >= platX - 55 && !this.hasJumpedUp && !this.isAutoJumpingUp && !this.isAutoJumpingDown) {
+      // 1. Forward Jump-Up onto platform from left lawn
+      if (charWorldX >= platX - 45 && !this.hasJumpedUp && !this.isAutoJumpingUp && !this.isAutoJumpingDown) {
         this.isAutoJumpingUp = true
         this.hasJumpedUp = true
         this.jumpAnimProgress = 0
         this.jumpDirection = 'right'
       }
 
-      // 2. Forward Jump-Down off platform right ledge
-      if (this.hasJumpedUp && !this.hasJumpedDown && charWorldX >= platX + platW - 30 && !this.isAutoJumpingUp && !this.isAutoJumpingDown) {
+      // 2. Forward Jump-Down off platform right ledge to right lawn
+      if (this.hasJumpedUp && !this.hasJumpedDown && charWorldX >= platX + platW + 27 && !this.isAutoJumpingUp && !this.isAutoJumpingDown) {
         this.isAutoJumpingDown = true
         this.hasJumpedDown = true
         this.jumpAnimProgress = 0
@@ -284,15 +284,15 @@ export class ScrollEngine {
     // --- BACKWARD MOTION (Moving Left) ---
     else {
       // 1. Backward Jump-Up onto platform from right lawn
-      if (charWorldX <= platX + platW + 55 && this.hasJumpedDown && !this.isAutoJumpingUp && !this.isAutoJumpingDown) {
+      if (charWorldX <= platX + platW + 65 && this.hasJumpedDown && !this.isAutoJumpingUp && !this.isAutoJumpingDown) {
         this.isAutoJumpingUp = true
         this.hasJumpedDown = false
         this.jumpAnimProgress = 0
         this.jumpDirection = 'left'
       }
 
-      // 2. Backward Jump-Down off platform left ledge onto left lawn
-      if (this.hasJumpedUp && charWorldX <= platX + 15 && !this.isAutoJumpingUp && !this.isAutoJumpingDown) {
+      // 2. Backward Jump-Down off platform left ledge to left lawn
+      if (this.hasJumpedUp && charWorldX <= platX + 20 && !this.isAutoJumpingUp && !this.isAutoJumpingDown) {
         this.isAutoJumpingDown = true
         this.hasJumpedUp = false
         this.jumpAnimProgress = 0
@@ -302,19 +302,19 @@ export class ScrollEngine {
 
     // --- ANIMATE ACTIVE JUMPS ---
     if (this.isAutoJumpingUp) {
-      this.jumpAnimProgress += 0.042
+      this.jumpAnimProgress += 0.045
       this.isJumping = true
 
-      // Propel in the direction of the leap
+      // Propel smoothly onto the platform
       const moveSign = this.jumpDirection === 'left' ? -1 : 1
-      const forwardDelta = moveSign * (70 / WORLD_LENGTH) * 0.042
+      const forwardDelta = moveSign * (20 / WORLD_LENGTH) * 0.045
       this.scrollProgress += forwardDelta
       this.targetScrollProgress = this.scrollProgress
       this.worldX = this.scrollProgress * WORLD_LENGTH
       this.cameraX = this.worldX
 
       const p = Math.min(1, this.jumpAnimProgress)
-      const arc = Math.sin(p * Math.PI) * 160
+      const arc = Math.sin(p * Math.PI) * 200 // Increased jump arc height
       this.charElevationY = platH * p + arc
 
       if (this.jumpAnimProgress >= 1) {
@@ -323,19 +323,19 @@ export class ScrollEngine {
         this.isJumping = false
       }
     } else if (this.isAutoJumpingDown) {
-      this.jumpAnimProgress += 0.048
+      this.jumpAnimProgress += 0.045
       this.isJumping = true
 
-      // Propel in the direction of the descent
+      // Propel smoothly clear of the platform step edge
       const moveSign = this.jumpDirection === 'left' ? -1 : 1
-      const forwardDelta = moveSign * (60 / WORLD_LENGTH) * 0.048
+      const forwardDelta = moveSign * (120 / WORLD_LENGTH) * 0.045
       this.scrollProgress += forwardDelta
       this.targetScrollProgress = this.scrollProgress
       this.worldX = this.scrollProgress * WORLD_LENGTH
       this.cameraX = this.worldX
 
       const p = Math.min(1, this.jumpAnimProgress)
-      const arc = Math.sin(p * Math.PI) * 28
+      const arc = Math.sin(p * Math.PI) * 35
       this.charElevationY = platH * (1 - p) + arc
 
       if (this.jumpAnimProgress >= 1) {
@@ -345,7 +345,7 @@ export class ScrollEngine {
       }
     } else if (this.hasJumpedUp && !this.hasJumpedDown) {
       // Solidly on the platform
-      if (charWorldX >= platX && charWorldX <= platX + platW) {
+      if (charWorldX >= platX - 10 && charWorldX <= platX + platW + 10) {
         this.charElevationY = platH
         this.isJumping = false
       }
@@ -384,14 +384,14 @@ export class ScrollEngine {
 
     // Once camera has nearly reached the ground (cameraY < 140), character drops down with gravity
     if (this.cameraY < 140 && !this.hasLanded) {
-      const targetGroundY = this.height * 0.80 - 74
-      this.characterVelocityY += 1.4 // Gravity acceleration
+      const targetGroundY = this.height * 0.68 - 2
+      this.characterVelocityY += 0.1 // Gentle arcade gravity acceleration
       this.characterDropY += this.characterVelocityY
 
       if (this.characterDropY >= targetGroundY) {
         this.characterDropY = targetGroundY
-        if (Math.abs(this.characterVelocityY) > 3) {
-          this.characterVelocityY = -this.characterVelocityY * 0.38 // Landing bounce
+        if (Math.abs(this.characterVelocityY) > 2) {
+          this.characterVelocityY = -this.characterVelocityY * 0.4 // Soft landing bounce
         } else {
           this.characterVelocityY = 0
           this.hasLanded = true
@@ -1270,10 +1270,14 @@ export class ScrollEngine {
   }
 
   drawAvatar() {
-    const screenX = this.width * 0.5
+    let screenX = this.width * 0.5
+    if (!this.hasLanded) {
+      screenX = this.width * 0.5 + 19.26 // Custom drop X position
+    }
+
     const groundY = this.height * 0.80
 
-    let avatarY = groundY - 85 - (this.charElevationY || 0)
+    let avatarY = groundY - 93 - (this.charElevationY || 0)
     if (!this.hasLanded) {
       avatarY = this.characterDropY
     } else if (this.isSubmarine) {
@@ -1283,11 +1287,10 @@ export class ScrollEngine {
     this.ctx.save()
     this.ctx.translate(screenX, avatarY)
 
-    if (this.facing === 'left') {
-      this.ctx.scale(-1, 1)
-    }
-
     if (this.isSubmarine) {
+      if (this.facing === 'left') {
+        this.ctx.scale(-1, 1)
+      }
       // ROBBY LEONARDI YELLOW SUBMARINE
       this.ctx.fillStyle = '#facc15'
       this.ctx.strokeStyle = '#ca8a04'
@@ -1325,8 +1328,8 @@ export class ScrollEngine {
       this.ctx.restore()
     } else {
       const bounceY = (this.isMoving && this.hasLanded && !this.isJumping) ? Math.sin(this.stridePhase) * 3 : 0
-      const isFlyingOrFalling = !this.hasLanded || this.isFlying
-      drawRobbyCharacter(this.ctx, bounceY, this.isMoving, this.stridePhase, isFlyingOrFalling, this.isJumping)
+      const isJumpingOrLanding = this.isJumping || !this.hasLanded
+      drawRobbyCharacter(this.ctx, bounceY, this.isMoving, this.stridePhase, this.isFlying, isJumpingOrLanding, this.facing)
     }
 
     this.ctx.restore()
