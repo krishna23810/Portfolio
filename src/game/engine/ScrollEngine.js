@@ -201,7 +201,7 @@ export class ScrollEngine {
     this.isMoving = speed > 0.00005
 
     // One-time Skill Plant Growth Trigger when entering Level 1 skills
-    if (this.cameraX >= 2650) {
+    if (this.cameraX >= 2900) {
       this.plantGrowthTriggered = true
     }
     if (this.plantGrowthTriggered) {
