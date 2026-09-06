@@ -7,6 +7,10 @@ import gateSrc from '../../assets/gate.png'
 import grassEdgeSrc from '../../assets/grass-edge.png'
 import titleAboutSrc from '../../assets/title-about.png'
 import treeBushSrc from '../../assets/tree-bush.png'
+import treeDarkSrc from '../../assets/tree-dark.png'
+import treeMedSrc from '../../assets/tree-medium.png'
+import treeSrc from '../../assets/tree.png'
+import treePillSrc from '../../assets/tree-pill.png'
 
 const plantSkillImg = new Image()
 plantSkillImg.src = plantSkillSrc
@@ -22,6 +26,18 @@ titleAboutImg.src = titleAboutSrc
 
 const treeBushImg = new Image()
 treeBushImg.src = treeBushSrc
+
+const treeDarkImg = new Image()
+treeDarkImg.src = treeDarkSrc
+
+const treeMedImg = new Image()
+treeMedImg.src = treeMedSrc
+
+const treeImg = new Image()
+treeImg.src = treeSrc
+
+const treePillImg = new Image()
+treePillImg.src = treePillSrc
 
 export class ScrollEngine {
   constructor(canvas, callbacks = {}) {
@@ -373,15 +389,48 @@ export class ScrollEngine {
     const titleCenterX = this.width * 0.5 - this.cameraX
 
     // =========================================================================
-    // 0. BACKGROUND 3D STRUCTURES (Behind grass & ground layer)
+    // 0. BACKGROUND 3D STRUCTURES & TREES (Behind grass & ground layer)
     // =========================================================================
-    // 3D "ABOUT" Graphic (tucked behind gate & grass lawn)
+    const aboutBaseX = 2300 + 130 - this.cameraX
+
+    // 0a. Tall pill trees & dark green tree dome rising behind ABOUT
+    // if (treePillImg.complete && treePillImg.naturalWidth > 0) {
+    //   // Left pill tree behind "A" in ABOUT
+    //   const leftPillW = 155
+    //   const leftPillH = leftPillW * (treePillImg.naturalHeight / treePillImg.naturalWidth) * 0.95
+    //   this.ctx.drawImage(treePillImg, aboutBaseX + 50, groundY - leftPillH, leftPillW, leftPillH)
+
+    //   // Right tall pill tree behind right slope of ABOUT
+    //   const pillW = 165
+    //   const pillH = pillW * (treePillImg.naturalHeight / treePillImg.naturalWidth) * 0.95
+    //   const pillX = aboutBaseX + 640
+    //   const pillY = groundY - pillH
+    //   this.ctx.drawImage(treePillImg, pillX, pillY, pillW, pillH)
+    // }
+
+    // if (treeDarkImg.complete && treeDarkImg.naturalWidth > 0) {
+    //   const darkW = 230
+    //   const darkH = darkW * (treeDarkImg.naturalHeight / treeDarkImg.naturalWidth)
+    //   const darkX = aboutBaseX + 530
+    //   const darkY = groundY - darkH * 0.95
+    //   this.ctx.drawImage(treeDarkImg, darkX, darkY, darkW, darkH)
+    // }
+
+    if (treePillImg.complete && treePillImg.naturalWidth > 0) {
+      const transPillW = 200
+      const transPillH = transPillW * (treePillImg.naturalHeight / treePillImg.naturalWidth)
+      this.ctx.drawImage(treePillImg, aboutBaseX + 610, groundY - transPillH, transPillW, transPillH)
+    }
+    // 0b. Cloud hovering above top-left of ABOUT letters
+    const aboutW = 860
+    const aboutH = titleAboutImg.complete && titleAboutImg.naturalWidth > 0
+      ? aboutW * (titleAboutImg.naturalHeight / titleAboutImg.naturalWidth)
+      : 360
+    const aboutY = groundY - aboutH * 0.90
+
+    // 0c. 3D "ABOUT" Graphic (tucked behind gate & grass lawn)
     if (titleAboutImg.complete && titleAboutImg.naturalWidth > 0) {
-      const aboutW = 860
-      const aboutH = aboutW * (titleAboutImg.naturalHeight / titleAboutImg.naturalWidth)
-      const aboutX = 2300 + 130 - this.cameraX
-      const aboutY = groundY - aboutH * 0.90
-      this.ctx.drawImage(titleAboutImg, aboutX, aboutY, aboutW, aboutH)
+      this.ctx.drawImage(titleAboutImg, aboutBaseX, aboutY, aboutW, aboutH)
     }
 
     // =========================================================================
@@ -438,31 +487,58 @@ export class ScrollEngine {
     // Title instruction prompt (Centered right below the avatar in the soil)
     if (this.cameraX < 900) {
       this.ctx.save()
-      this.ctx.font = '900 17px "Arial", "Impact", sans-serif'
+      const isMobile = this.width < 600
+      this.ctx.font = isMobile ? 'bold 12px monospace' : '900 17px "Arial", "Impact", sans-serif'
       this.ctx.textAlign = 'center'
       this.ctx.fillStyle = '#ffffff'
       this.ctx.shadowColor = 'rgba(0,0,0,0.65)'
       this.ctx.shadowBlur = 5
+      const promptText = isMobile
+        ? 'Swipe OR scroll to explore'
+        : 'Scroll down mouse OR press keyboard\'s down-arrow'
       this.ctx.fillText(
-        'Scroll down mouse OR press keyboard\'s down-arrow',
+        promptText,
         titleCenterX,
-        groundY + 68
+        groundY + (isMobile ? 50 : 68)
       )
       this.ctx.restore()
     }
 
     // =========================================================================
     // LEVEL 1: ROBBY LEONARDI 3D ABOUT TITLE, GATE & SKILL PLANTS
-    // =========================================================================
-    // 1. LEVEL 1 Gate (in front of ABOUT shadow, on grass)
+    // 1. Pill tree before LEVEL 1 Gate
+
+    // LEVEL 1 Gate (in front of ABOUT shadow, on grass)
     this.drawGate(2300, 'LEVEL 1', '#e52d27', groundY)
 
-    // 2. Round green bushes overlapping base of ABOUT shadow (on grass)
+    // 2. Overlapping Round Green Bushes & Trees at base of ABOUT slope (on grass)
     if (treeBushImg.complete && treeBushImg.naturalWidth > 0) {
-      const bushW = 125
-      const bushH = bushW * (treeBushImg.naturalHeight / treeBushImg.naturalWidth)
-      this.ctx.drawImage(treeBushImg, 2300 + 640 - this.cameraX, groundY - bushH, bushW, bushH)
-      this.ctx.drawImage(treeBushImg, 2300 + 740 - this.cameraX, groundY - bushH * 1.1, bushW * 1.1, bushH * 1.1)
+
+
+      // Middle-left larger bush
+      const bush2W = 145
+      const bush2H = bush2W * (treeBushImg.naturalHeight / treeBushImg.naturalWidth)
+      this.ctx.drawImage(treeBushImg, aboutBaseX + 430, groundY - bush2H * 1, bush2W, bush2H)
+
+      // Middle-right bush
+      const bush3W = 125
+      const bush3H = bush3W * (treeDarkImg.naturalHeight / treeDarkImg.naturalWidth)
+      this.ctx.drawImage(treeDarkImg, aboutBaseX + 535, groundY - bush3H, bush3W, bush3H)
+    }
+
+    // Right-side medium dome tree next to bushes
+    // if (treeMedImg.complete && treeMedImg.naturalWidth > 0) {
+    //   const medW = 135
+    //   const medH = medW * (treeMedImg.naturalHeight / treeMedImg.naturalWidth)
+    //   this.ctx.drawImage(treeMedImg, aboutBaseX + 630, groundY - medH * 0.92, medW, medH)
+    // }
+
+
+    // Right-side foreground pill tree transitioning towards skill plants
+    if (treeImg.complete && treeImg.naturalWidth > 0) {
+      const transPillW = 200
+      const transPillH = transPillW * (treeImg.naturalHeight / treeImg.naturalWidth) * 1
+      this.ctx.drawImage(treeImg, aboutBaseX + 750, groundY - transPillH, transPillW, transPillH)
     }
 
     // 3. Robby Leonardi Skill Plants (spaced with breathing room after ABOUT)
