@@ -97,7 +97,7 @@ export default function Navbar() {
           className="group flex items-center gap-1 font-mono text-lg font-bold tracking-tight text-white transition-transform duration-200 hover:scale-[1.03]"
         >
           <span className="text-emerald-400 transition-transform duration-200 group-hover:-translate-x-0.5">[</span>
-          <span>KA</span>
+          <span>KK</span>
           <span className="text-emerald-400 transition-transform duration-200 group-hover:translate-x-0.5">]</span>
           {/* <span className="ml-2 hidden text-[10px] font-normal tracking-wider text-gray-500 sm:inline">/ DEV_MODE</span> */}
         </a>

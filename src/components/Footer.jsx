@@ -52,7 +52,7 @@ export default function Footer() {
           <div className="flex items-center gap-3">
             <a href="#" className="flex items-center gap-2 group">
               <span className="text-emerald-400 font-extrabold text-sm tracking-wider font-mono px-2.5 py-1 rounded bg-emerald-500/10 border border-emerald-500/20 group-hover:border-emerald-400 transition-colors">
-                [ KA ]
+                [ KK ]
               </span>
               <span className="text-gray-400 text-xs font-semibold">Krishnakant Agrawal</span>
             </a>
