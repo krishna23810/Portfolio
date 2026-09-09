@@ -191,12 +191,24 @@ export default function ModalViewer({ activeModal, onClose }) {
             </div>
 
             <div className="pt-4 border-t border-slate-100 flex items-center justify-between gap-3">
-              <button
-                onClick={onClose}
-                className="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 text-xs font-bold transition-all"
-              >
-                CLOSE
-              </button>
+              {data.githubUrl ? (
+                <a
+                  href={data.githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-800 text-xs font-bold transition-all shadow-sm"
+                >
+                  <GitHubIcon className="w-4 h-4 text-slate-700" />
+                  <span>SOURCE CODE</span>
+                </a>
+              ) : (
+                <button
+                  onClick={onClose}
+                  className="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 text-xs font-bold transition-all"
+                >
+                  CLOSE
+                </button>
+              )}
               <a
                 href={data.apkUrl}
                 download="TravelPlanner.apk"

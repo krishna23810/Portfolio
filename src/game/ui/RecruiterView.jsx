@@ -171,7 +171,7 @@ export default function RecruiterView({ onSwitchToGame }) {
                 FLAGSHIP PROTOCOL
               </span>
               <a
-                href="https://ghost-call-ten.vercel.app/"
+                href="https://ghost-call-theta.vercel.app/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-xs font-mono text-cyan-400 flex items-center gap-1 hover:underline"

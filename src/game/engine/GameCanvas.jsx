@@ -57,13 +57,13 @@ export default function GameCanvas({
             type: 'project',
             data: {
               title: 'GHOST CALL',
-              category: 'WebRTC P2P Video Call App',
-              badge: 'WEBRTC LIVE',
-              desc: 'Sub-40ms P2P encrypted audio/video calling app with zero intermediate server streaming.',
-              stats: { latency: '< 40ms', encryption: 'AES-128', topology: 'Mesh' },
-              techStack: ['WebRTC', 'Socket.io', 'Node.js', 'STUN/TURN'],
-              liveUrl: 'https://ghost-call-ten.vercel.app/',
-              githubUrl: 'https://github.com/krishna23810/ghost-call',
+              category: 'WebRTC & LiveKit Anonymous Video Calling Platform',
+              badge: 'FEATURED LIVE APPLICATION',
+              desc: 'A high-performance real-time video calling platform engineered with WebRTC & LiveKit. Enables instant, peer-to-peer encrypted audio/video communication with zero sign-up friction and sub-40ms latency.',
+              stats: { latency: '< 40ms', encryption: 'AES-256 E2EE', network: 'LiveKit / WebRTC' },
+              techStack: ['WebRTC', 'LiveKit', 'Socket.io', 'React', 'Node.js', 'Tailwind CSS'],
+              liveUrl: 'https://ghost-call-theta.vercel.app/',
+              githubUrl: 'https://github.com/krishna23810/Ghost-call',
             },
           })
         }
@@ -78,8 +78,9 @@ export default function GameCanvas({
               title: 'SUBCIDYS SAAS',
               role: 'Full Stack Developer Intern @ TRISX',
               badge: 'FINTECH PRODUCTION SAAS',
-              desc: 'Enterprise MSME financial technology platform handling automated GST billing and webhooks.',
-              stats: { impact: 'Automated GST Invoicing', uptime: '99.9%' },
+              desc: 'Financial Operating System for Indian MSMEs handling automated GST billing, merchant subsidies, payment gateway integrations, and cryptographic webhook verifications.',
+              stats: { impact: 'Automated GST Invoicing', uptime: '99.9%', caching: 'Redis' },
+              techStack: ['React', 'Node.js', 'Express', 'MongoDB', 'Redis', 'Razorpay'],
             },
           })
         }
@@ -91,11 +92,13 @@ export default function GameCanvas({
           onOpenModal({
             type: 'download',
             data: {
-              title: 'TRAVEL PLANNER APK',
-              category: 'Flutter Cross-Platform Mobile App',
+              title: 'TRAVEL PLANNER',
+              category: 'Cross-Platform Destination & Weather App',
+              badge: 'FLUTTER MOBILE APP',
               apkSize: '55.37 MB',
               apkUrl: '/TravelPlanner.apk',
-              desc: 'Smart itinerary planner and weather forecasting mobile application for Android.',
+              githubUrl: 'https://github.com/krishna23810/Travel-planner',
+              desc: 'Cross-platform mobile application enabling users to search destinations, explore famous landmarks, view real-time live weather forecasts, and build customized trip itineraries.',
             },
           })
         }

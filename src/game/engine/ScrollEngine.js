@@ -672,7 +672,7 @@ export class ScrollEngine {
       subtitle: 'Sub-40ms P2P Encrypted Video Call',
       desc: 'Built with pure WebRTC mesh topology, Socket.io signaling, and STUN/TURN relays with zero intermediary media lag.',
       stats: ['< 40ms Latency', 'AES-128 P2P', 'Mesh Network'],
-      url: 'https://ghost-call-ten.vercel.app/',
+      url: 'https://ghost-call-theta.vercel.app/',
     })
 
     this.drawProjectShowcase(7200, {
